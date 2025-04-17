@@ -26,6 +26,6 @@ app.get("/", (_req, res) => {
 // handle validation and error handling
 
 // move to front end
-// extra features, accessibility, responsiveness
+// extra features, accessibility, responsiveness, timeline view, importance rating, sorting by importance, sorting by due date, filtering by status, importance, due date, user ownership
 // scripts to handle everything easily for tester
 // README/documentation
