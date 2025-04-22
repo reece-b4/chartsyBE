@@ -1,4 +1,5 @@
 import express from "express";
+//@ts-ignore
 import db from "../db/connection";
 
 const app = express();
@@ -9,6 +10,25 @@ app.listen(4000, () => {
 
 app.get("/", (_req, res) => {
   res.send("get request received, 200 OK");
+});
+
+app.get("/api/tasks", async (_req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM tasks;");
+    const tasks = result.rows.map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      due: task.due,
+      priority: task.priority,
+      tags: task.tags,
+    }));
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error("Failed to fetch tasks:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 });
 
 app.post("/api/task",async (req, res) => {
