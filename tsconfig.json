@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -18,6 +19,6 @@
     "noUnusedParameters": true,         
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src/**/*", "../db/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
