@@ -7,8 +7,6 @@
         "status": "complete",
         "due": "2023-10-01T10:00:00Z",
         "priority": "high",
-        "createdAt": null,
-        "updatedAt": null,
         "tags": ["pensions", "documentation"]
     },
     {

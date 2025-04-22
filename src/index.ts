@@ -23,6 +23,8 @@ app.get("/api/tasks", async (_req, res) => {
       due: task.due,
       priority: task.priority,
       tags: task.tags,
+      created_at: task.created_at,
+      updated_at: task.updated_at,
     }));
     res.status(200).json(tasks);
   } catch (error) {
