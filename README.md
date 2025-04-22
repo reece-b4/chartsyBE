@@ -27,4 +27,12 @@ TODO: look into forced typescript version mismatch
 -post endpoint created in index.ts to be refactored into model and controller
 -post endpoint handles sql injection (TODO: test and add further protection if needed)
 -ensure env is git ignored
+-add ts-jest and types package and add tests dir to tsconfig allow list
+-add jest.config.ts as using ts-jest for typecript
+-add tests dir and test to package.json scripts
+-add single test
+-had to separate src/index.ts into app.ts and index.ts to prevent jest from hanging because of unnecessary server connection being opened as supertest handles creation of connection for test purposes
+-needed separate .env.test file as jest points to the env file by default
+-ensure db connection is closed after all tests ran
+-ensure test fails first
 

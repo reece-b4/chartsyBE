@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node"],
+    "types": ["node", "jest"],
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -17,8 +17,8 @@
     "allowSyntheticDefaultImports": true,              
     "noUnusedLocals": true,              
     "noUnusedParameters": true,         
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src/**/*", "../db/**/*.ts"],
+  "include": ["src/**/*", "../db/**/*.ts", "../tests/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
