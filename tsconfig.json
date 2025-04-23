@@ -1,24 +1,12 @@
 {
-  "compilerOptions": {
-    "types": ["node", "jest"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "target": "ES2020",
-    "module": "CommonJS",
-    "rootDir": "src",
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,                      
-    "skipLibCheck": true,                
-    "moduleResolution": "node",         
-    "resolveJsonModule": true,          
-    "allowSyntheticDefaultImports": true,              
-    "noUnusedLocals": true,              
-    "noUnusedParameters": true,         
-    "noFallthroughCasesInSwitch": true,
-  },
-  "include": ["src/**/*", "../db/**/*.ts", "../tests/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "extends": "./tsconfig.build.json",
+  "include": [
+    "src/**/*/.ts",
+    "tests/**/*.ts",
+    "db/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+  ],
 }

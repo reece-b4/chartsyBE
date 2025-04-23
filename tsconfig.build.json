@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+      "types": ["node", "jest"],
+      "paths": {
+        "@/*": ["./src/*"]
+      },
+      "target": "ES2020",
+      "module": "CommonJS",
+      "rootDir": ".",
+      "outDir": "dist",
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "strict": true,                      
+      "skipLibCheck": true,                
+      "moduleResolution": "node",         
+      "resolveJsonModule": true,          
+      "allowSyntheticDefaultImports": true,              
+      "noUnusedLocals": true,              
+      "noUnusedParameters": true,         
+      "noFallthroughCasesInSwitch": true,
+    },
+    "include": ["src/**/*", "db/connection.ts"],
+    "exclude": ["node_modules", "dist", "bd/seed", "db/utils", "tests", "dist", "node_modules"]
+  }

@@ -1,13 +1,12 @@
 import express from "express";
-// TODO: fix non root import error
-//@ts-ignore
 import db from "../db/connection";
+import { notAPath } from "@/errorhandling/index";
 
 export const app = express();
-app.use(express.json()); 
+app.use(express.json());
 
 app.get("/api", (_req, res) => {
-  res.status(200).json("get request received, 200 OK");
+  res.status(200).json({ msg: "get request received, 200 OK" });
 });
 
 app.get("/api/tasks", async (_req, res) => {
@@ -24,14 +23,14 @@ app.get("/api/tasks", async (_req, res) => {
       created_at: task.created_at,
       updated_at: task.updated_at,
     }));
-    res.status(200).json(tasks);
+    res.status(200).json({ tasks });
   } catch (error) {
     console.error("Failed to fetch tasks:", error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ msg: "Something went wrong - could not get tasks" });
   }
 });
 
-app.post("/api/task",async (req, res) => {
+app.post("/api/task", async (req, res) => {
   const { title, description, status, due, priority, tags } = req.body;
   try {
     const result = await db.query(
@@ -43,6 +42,8 @@ app.post("/api/task",async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error("Failed to insert task:", error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ msg: "Something went wrong - could not post task" });
   }
-})
+});
+
+app.all("/api/*", notAPath);
