@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.build.json",
   "include": [
-    "src/**/*/.ts",
-    "tests/**/*.ts",
-    "db/**/*.ts"
+    "src/**/*",
+    "tests/**/*",
+    "db/**/*"
   ],
   "exclude": [
     "node_modules",
