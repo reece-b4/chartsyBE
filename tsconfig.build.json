@@ -4,7 +4,10 @@
       "paths": {
         "@/*": ["./src/*"]
       },
+      // use modern features
       "target": "ES2020",
+      // compile to commonJS for viability with more node versions
+      // could use ESNext or others if using I were to containerise
       "module": "CommonJS",
       "rootDir": ".",
       "outDir": "dist",

@@ -35,4 +35,12 @@ TODO: look into forced typescript version mismatch
 -needed separate .env.test file as jest points to the env file by default
 -ensure db connection is closed after all tests ran
 -ensure test fails first
+-used thunder client for http requests
+-fix @ alias with module-alias/register package
+-fix seedDB to use for of loop in place of for each as for each is not async
+-add date checking in seed for better errors and try catch
+-ensure runSeed is awaited as logs were out of sync
+-add interfaces
+-exctract task jest test functionality from gettasks to reuse for get task
+
 

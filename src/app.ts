@@ -9,6 +9,24 @@ app.get("/api", (_req, res) => {
   res.status(200).json({ msg: "get request received, 200 OK" });
 });
 
+// TODO: add next error handling middleware
+// then add other endpoints
+// then refactor to use model controller pattern
+app.get("/api/task/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await db.query("SELECT * FROM tasks WHERE id = $1;", [id]);
+    if (result.rows.length === 0) {
+      res.status(404).json({ msg: "Task not found" });
+    }
+    res.status(200).json({task: result.rows[0]});
+  } 
+  catch (error) {
+    console.error("Failed to fetch task:", error);
+    res.status(500).json({ msg: "Something went wrong - could not get task" });
+  }
+});
+
 app.get("/api/tasks", async (_req, res) => {
   try {
     const result = await db.query("SELECT * FROM tasks;");
@@ -39,7 +57,7 @@ app.post("/api/task", async (req, res) => {
       [title, description, status, due, priority, tags]
     );
 
-    res.status(201).json(result.rows[0]);
+    res.status(201).json({task: result.rows[0]});
   } catch (error) {
     console.error("Failed to insert task:", error);
     res.status(500).json({ msg: "Something went wrong - could not post task" });

@@ -1,7 +1,9 @@
 import axios from "axios";
-import tasks from "../data/tasks.json"
+import tasks from "../data/tasks.json";
 import db from "../connection";
-
+import { TaskInput } from "@/interfaces";
+import { isValidISODateString } from "../utils/index";
+const tasksJson = tasks.tasks as TaskInput[];
 const baseURL = process.env.BASE_URL;
 
 if (!baseURL) {
@@ -9,16 +11,31 @@ if (!baseURL) {
 }
 
 const api = axios.create({ baseURL });
-
-const runSeed = async ( tasks: any ) => {
-  db.query(`TRUNCATE TABLE tasks CASCADE;`)
-  await postTasks(tasks.tasks);
+const runSeed = async (tasks: TaskInput[]) => {
+  db.query(`TRUNCATE TABLE tasks RESTART IDENTITY CASCADE;`);
+  await postTasks(tasks);
 };
 
-const postTasks = async (tasks: any) => {
-   tasks.forEach(async (task: any) => {
-   await api.post("/api/task", task);
-  })
-}
+const postTasks = async (tasks: TaskInput[]) => {
+  for (const task of tasks) {
+    try {
+      if (!isValidISODateString(task.due, false)) {
+        console.error(`Invalid date format for task: ${task.description}`);
+        continue;
+      }
+      await api.post("/api/task", task);
+    } catch (err: any) {
+      console.error(
+        "Error seeding task. Reason:",
+        err.response?.data ?? err.message
+      );
+    }
+  }
+};
 
-runSeed(tasks);
+(async () => {
+  console.time("Seeding tasks");
+  await runSeed(tasksJson);
+  await db.end();
+  console.timeEnd("Seeding tasks");
+})()

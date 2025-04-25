@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS tasks(
     updated_at TIMESTAMP,
     due TIMESTAMP,
     "priority" VARCHAR CHECK ("priority" IN ('low', 'medium', 'high', 'urgent')),
-    "description" VARCHAR,
+    "description" VARCHAR | null,
     tags VARCHAR[]
   );
 

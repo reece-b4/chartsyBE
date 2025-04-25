@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
+  "_moduleAliases": {
+    "@": "dist"
+  },
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon --watch src --exec ts-node src/index.ts",
+    "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
     "dist:clean": "rm -rf dist",
     "build": "pnpm dist:clean && tsc -p tsconfig.build.json",
     "db:create": "psql -f db/seed/createDB.sql && ts-node db/seed/seedDB.ts",
+    "db:seed": "ts-node db/seed/seedDB.ts",
     "db:delete": "psql -f db/seed/deleteDB.sql",
     "test": "jest"
   },
@@ -17,6 +21,7 @@
     "axios": "^1.8.4",
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
+    "module-alias": "^2.2.3",
     "pg": "^8.14.1"
   },
   "devDependencies": {
@@ -29,6 +34,7 @@
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.6"
   },
   "packageManager": "pnpm@10.8.1+sha512.c50088ba998c67b8ca8c99df8a5e02fd2ae2e2b29aaf238feaa9e124248d3f48f9fb6db2424949ff901cffbb5e0f0cc1ad6aedb602cd29450751d11c35023677"
