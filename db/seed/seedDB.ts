@@ -12,7 +12,7 @@ if (!baseURL) {
 
 const api = axios.create({ baseURL });
 const runSeed = async (tasks: TaskInput[]) => {
-  db.query(`TRUNCATE TABLE tasks RESTART IDENTITY CASCADE;`);
+  await db.query(`TRUNCATE TABLE tasks RESTART IDENTITY CASCADE;`);
   await postTasks(tasks);
 };
 

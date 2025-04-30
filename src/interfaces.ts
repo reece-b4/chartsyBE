@@ -16,3 +16,9 @@ export interface Task extends TaskInput {
 export type Tag = "pensions" | "benefits" | "documentation";
 export type TaskStatus = "in_progress" | "complete" | "pending";
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
+
+export interface AppError extends Error {
+  status?: number;
+  code?: string;
+  msg?: string;
+}

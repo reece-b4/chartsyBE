@@ -10,9 +10,9 @@
 - add sdk settings for types to work correctly with yarn pnp architecture
 - false type errors persist
 - sdk typescript version needs to be 5.4.6 with package.json version 5.1.6 for it to work - should not be this way
-TODO: look into forced typescript version mismatch
 - changed to pnpm to avoid yarn/pnp typescript version mismatch hacky fix
 - add package, pg, axios, dotenv and associated types packages
+- ensure db table columns have not null on appropriate columns
 - add db:create and delete to pac kage.json scripts
 -create also runs seed and uses commands psql <path> and ts-node <path> to run files at paths
 -ensure tsconfig includes all files in src and in db dirs - had to explicitly point to db as is outside of source (personal preference but may not be standard practice as tsconfig didn't seem to like it)
@@ -41,6 +41,9 @@ TODO: look into forced typescript version mismatch
 -add date checking in seed for better errors and try catch
 -ensure runSeed is awaited as logs were out of sync
 -add interfaces
--exctract task jest test functionality from gettasks to reuse for get task
+-extract task jest test functionality from getTasks to reuse for get task
+-fix seeding: add await to truncate (delete contents of table) query to ensure it had finished before posting dummy data
+-refactor to use model and controller pattern
+-add error handling middleware
 
 
