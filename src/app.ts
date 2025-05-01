@@ -1,9 +1,11 @@
 import express from "express";
+import cors from "cors";
 import { notAPath } from "@/errorhandling/index";
 import { customErrors, sqlErrors, serverErrors } from "@/errorhandling/index";
 import { getAllTasks, getTaskById, postTask } from "@/controllers/tasks.controller";
 
 export const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/api", (_req, res) => {

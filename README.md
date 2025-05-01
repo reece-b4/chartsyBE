@@ -45,5 +45,6 @@
 -fix seeding: add await to truncate (delete contents of table) query to ensure it had finished before posting dummy data
 -refactor to use model and controller pattern
 -add error handling middleware
+- add cors to be able to connect from external project
 
 
