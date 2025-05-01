@@ -1,3 +1,3 @@
-/c anon_tech_test_db
+/c chartsydb
 
 TRUNCATE TABLE tasks CASCADE;

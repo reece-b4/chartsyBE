@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS anon_tech_test_db;
-CREATE DATABASE anon_tech_test_db;
+DROP DATABASE IF EXISTS chartsydb;
+CREATE DATABASE chartsydb;
 
-\c anon_tech_test_db
+\c chartsydb
 
 CREATE TABLE IF NOT EXISTS tasks(
     id SERIAL PRIMARY KEY,

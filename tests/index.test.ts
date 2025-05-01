@@ -3,12 +3,18 @@ import { app } from "../src/app";
 import db from "../db/connection";
 import { Task } from "../src/interfaces";
 import { validateTask } from "../tests/utils";
+import { runSeed } from "../db/seed/seedDB";
+import { TaskInput } from "@/interfaces";
+import tasks from "../db/data/tasks.json";
 
-// keep in mind to reset DB data when needed
+const tasksJson = tasks.tasks as TaskInput[];
+afterEach(async () => {
+ return await runSeed(tasksJson);
+});
 
-// http tests
 
-afterAll(() => {
+afterAll(async () => {
+  console.log("Closing database connection");
   return db.end();
 });
 

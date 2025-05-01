@@ -1,1 +1,1 @@
-DROP DATABASE IF EXISTS anon_tech_test_db;
+DROP DATABASE IF EXISTS chartsydb;
