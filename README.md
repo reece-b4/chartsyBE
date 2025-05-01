@@ -10,5 +10,41 @@
 - add sdk settings for types to work correctly with yarn pnp architecture
 - false type errors persist
 - sdk typescript version needs to be 5.4.6 with package.json version 5.1.6 for it to work - should not be this way
-TODO: look into forced typescript version mismatch
 - changed to pnpm to avoid yarn/pnp typescript version mismatch hacky fix
+- add package, pg, axios, dotenv and associated types packages
+- ensure db table columns have not null on appropriate columns
+- add db:create and delete to pac kage.json scripts
+-create also runs seed and uses commands psql <path> and ts-node <path> to run files at paths
+-ensure tsconfig includes all files in src and in db dirs - had to explicitly point to db as is outside of source (personal preference but may not be standard practice as tsconfig didn't seem to like it)
+- create connection.ts and env file (development only at this point) to create pool to connect to 
+-had to install pg on machine and create initial db (of computer user name) to connect to and allow createdb.sql to then connect to other DBs ie the one used in this service
+-create createDB, deleteDB, deleteTasksconent sql files to be ran
+-createDB.sql drops then creates our single table with contstraints
+-delete db deletes db
+-deletetaskscontent.sql removes all data from our single table (TODO remove if not used as is not currently)
+-env needs PGDATABASE=databasename and BASE_URL=baseurl vars
+-seed db creates connection to server and deletes all table data then calls postTasks to seed data from tasks.json
+-post endpoint created in index.ts to be refactored into model and controller
+-post endpoint handles sql injection (TODO: test and add further protection if needed)
+-ensure env is git ignored
+-add ts-jest and types package and add tests dir to tsconfig allow list
+-add jest.config.ts as using ts-jest for typecript
+-add tests dir and test to package.json scripts
+-add single test
+-had to separate src/index.ts into app.ts and index.ts to prevent jest from hanging because of unnecessary server connection being opened as supertest handles creation of connection for test purposes
+-needed separate .env.test file as jest points to the env file by default
+-ensure db connection is closed after all tests ran
+-ensure test fails first
+-used thunder client for http requests
+-fix @ alias with module-alias/register package
+-fix seedDB to use for of loop in place of for each as for each is not async
+-add date checking in seed for better errors and try catch
+-ensure runSeed is awaited as logs were out of sync
+-add interfaces
+-extract task jest test functionality from getTasks to reuse for get task
+-fix seeding: add await to truncate (delete contents of table) query to ensure it had finished before posting dummy data
+-refactor to use model and controller pattern
+-add error handling middleware
+- add cors to be able to connect from external project
+
+

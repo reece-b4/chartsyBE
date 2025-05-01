@@ -17,5 +17,8 @@ node_modules
 .pnp.*
 
 .env
+.env.**
 
 dist
+
+TODO.md
