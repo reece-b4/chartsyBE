@@ -22,7 +22,7 @@
 -createDB.sql drops then creates our single table with contstraints
 -delete db deletes db
 -deletetaskscontent.sql removes all data from our single table (TODO remove if not used as is not currently)
--env needs PGDATABASE=databasename and BASE_URL=baseurl vars
+-env needs PGDATABASE=databasename and DATABASE_URL=localhost for dev url and production db url wherever it is hosted vars
 -seed db creates connection to server and deletes all table data then calls postTasks to seed data from tasks.json
 -post endpoint created in index.ts to be refactored into model and controller
 -post endpoint handles sql injection (TODO: test and add further protection if needed)

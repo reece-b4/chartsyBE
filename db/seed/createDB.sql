@@ -1,6 +1,3 @@
-DROP DATABASE IF EXISTS chartsydb;
-CREATE DATABASE chartsydb;
-
 \c chartsydb
 
 CREATE TABLE IF NOT EXISTS tasks(

@@ -1,16 +1,8 @@
-// import axios from "axios";
 import tasks from "../data/tasks.json";
 import db from "../connection";
 import { TaskInput } from "@/interfaces";
 import { isValidISODateString } from "../utils/index";
 const tasksJson = tasks.tasks as TaskInput[];
-const baseURL = process.env.BASE_URL;
-
-if (!baseURL) {
-  throw new Error("Missing BASE_URL environment variable");
-}
-
-// const api = axios.create({ baseURL });
 
 export const runSeed = async (tasks: TaskInput[]) => {
   await db.query(`TRUNCATE TABLE tasks RESTART IDENTITY CASCADE;`);
@@ -29,9 +21,8 @@ const postTasks = async (tasks: TaskInput[]) => {
          VALUES ($1, $2, $3, $4, $5, $6);`,
         [task.title, task.description, task.status, task.due, task.priority, task.tags]
       );
-      // await api.post("/api/task", task);
     } catch (err: any) {
-      console.error("Error seeding task. Reason:", err.code);
+      console.error("Error seeding task. Reason:", err);
     }
   }
 };

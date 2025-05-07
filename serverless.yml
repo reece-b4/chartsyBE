@@ -1,0 +1,10 @@
+# point to env file/s for env vars
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-2
+  environment:
+    NODE_ENV: production
+    DATABASE_URL: ${env:DATABASE_URL}
