@@ -1,4 +1,6 @@
-# point to env file/s for env vars
+service: chartsy-api
+
+#point to env file/s for env vars
 useDotenv: true
 
 provider:
@@ -7,4 +9,13 @@ provider:
   region: eu-west-2
   environment:
     NODE_ENV: production
+    PGDATABASE: ${env:PGDATABASE}
     DATABASE_URL: ${env:DATABASE_URL}
+
+functions:
+  api:
+    handler: src/lambda.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: ANY

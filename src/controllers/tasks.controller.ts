@@ -10,10 +10,11 @@ export const getAllTasks = async (
     const tasks = await fetchAllTasks();
     res.status(200).json({ tasks });
   } catch (error) {
+    console.error("Error in /api/tasks:", error);
     next(error);
   }
 };
-//
+
 export const getTaskById = async (
   req: Request,
   res: Response,
@@ -29,6 +30,7 @@ export const getTaskById = async (
     }
     res.status(200).json({ task: result });
   } catch (error) {
+    console.error("Error in /api/task:id", error);
     next(error);
   }
 };
@@ -40,6 +42,7 @@ export const postTask = async (req: Request,
     const task = await addTask(req.body)
     res.status(201).json({ task });
   } catch (error) {
+    console.error("Error in post /api/task:", error);
     next(error);
   }
 }
