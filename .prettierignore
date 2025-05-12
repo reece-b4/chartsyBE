@@ -1,0 +1,70 @@
+# Node modules
+node_modules
+
+# Build output
+dist
+build
+out
+coverage
+
+# Dependency lockfiles
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# TypeScript compiled output
+*.js
+*.d.ts
+*.js.map
+
+# Serverless / AWS build artifacts
+.serverless
+.aws-sam
+
+# Capacitor native platforms
+ios
+android
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE config
+.vscode
+.idea
+
+# Git metadata
+.git
+.gitignore
+
+# Log files
+*.log
+
+# Lint caches
+.eslintcache
+.prettiercache
+
+# Test snapshots & coverage
+__snapshots__
+coverage
+.nyc_output
+
+# Frontend-specific folders
+frontend/public
+frontend/.vite
+frontend/.next
+frontend/.svelte-kit
+
+# Backend-specific folders
+backend/tmp
+backend/logs
+
+# Ignore symlinked shared types in frontend
+src/chartsyBE-types
