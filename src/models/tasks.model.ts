@@ -1,5 +1,5 @@
 import db from "../../db/connection";
-import { Task } from "@/interfaces";
+import { Task } from "@/types";
 
 export const fetchAllTasks = async () => {
   const result = await db.query("SELECT * FROM tasks;");
@@ -27,11 +27,11 @@ export const fetchTaskById = async (id: string) => {
 };
 
 export const addTask = async (task: Task) => {
-    const { title, description, status, due, priority, tags } = task;
-    const result = await db.query(
-        `INSERT INTO tasks (title, description, status, due, priority, tags) 
+  const { title, description, status, due, priority, tags } = task;
+  const result = await db.query(
+    `INSERT INTO tasks (title, description, status, due, priority, tags) 
          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
-        [title, description, status, due, priority, tags]
-      );
-      return result.rows[0];
-}
+    [title, description, status, due, priority, tags]
+  );
+  return result.rows[0];
+};

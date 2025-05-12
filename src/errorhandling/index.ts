@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "@/interfaces";
+import { AppError } from "@/types";
 
 export const notAPath = (_req: Request, res: Response) => {
   res.status(404).send({ msg: "path not found" });

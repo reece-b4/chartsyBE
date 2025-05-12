@@ -1,17 +1,16 @@
 import request from "supertest";
 import { app } from "../src/app";
 import db from "../db/connection";
-import { Task } from "../src/interfaces";
+import { Task } from "../src/types";
 import { validateTask } from "../tests/utils";
 import { runSeed } from "../db/seed/seedDB";
-import { TaskInput } from "@/interfaces";
+import { TaskInput } from "@/types";
 import tasks from "../db/data/tasks.json";
 
 const tasksJson = tasks.tasks as TaskInput[];
 afterEach(async () => {
- return await runSeed(tasksJson);
+  return await runSeed(tasksJson);
 });
-
 
 afterAll(async () => {
   console.log("Closing database connection");
@@ -48,7 +47,7 @@ describe("/api", () => {
         expect(response.body.tasks).toBeInstanceOf(Array);
         expect(response.body.tasks.length).toBeGreaterThan(0);
         response.body.tasks.forEach((task: Task) => {
-          expect(validateTask(task))
+          expect(validateTask(task));
         });
       });
   });
@@ -70,7 +69,7 @@ describe("POST /api/task", () => {
       .send(newTask)
       .expect(201)
       .then((response) => {
-        expect(validateTask(response.body.task))
+        expect(validateTask(response.body.task));
       });
   });
 });

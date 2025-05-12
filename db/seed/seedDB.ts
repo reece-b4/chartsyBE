@@ -1,6 +1,6 @@
 import tasks from "../data/tasks.json";
 import db from "../connection";
-import { TaskInput } from "@/interfaces";
+import { TaskInput } from "@/types";
 import { isValidISODateString } from "../utils/index";
 const tasksJson = tasks.tasks as TaskInput[];
 
@@ -19,7 +19,14 @@ const postTasks = async (tasks: TaskInput[]) => {
       await db.query(
         `INSERT INTO tasks (title, description, status, due, priority, tags)
          VALUES ($1, $2, $3, $4, $5, $6);`,
-        [task.title, task.description, task.status, task.due, task.priority, task.tags]
+        [
+          task.title,
+          task.description,
+          task.status,
+          task.due,
+          task.priority,
+          task.tags,
+        ]
       );
     } catch (err: any) {
       console.error("Error seeding task. Reason:", err);
