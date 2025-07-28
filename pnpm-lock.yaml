@@ -48,6 +48,9 @@ importers:
       '@types/supertest':
         specifier: ^6.0.3
         version: 6.0.3
+      chartsy-types:
+        specifier: ^1.0.7
+        version: 1.0.7
       dotenv-cli:
         specifier: ^8.0.0
         version: 8.0.0
@@ -701,6 +704,9 @@ packages:
   char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
     engines: {node: '>=10'}
+
+  chartsy-types@1.0.7:
+    resolution: {integrity: sha512-bKVVBnCOyJbmjQdUGSETiRx8Vaua6SryJVZsosVyU9nFNwJMZeI10knar0oXQLND6rLy9gXG/5yLEvExgI9eZA==}
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -3026,6 +3032,8 @@ snapshots:
       supports-color: 7.2.0
 
   char-regex@1.0.2: {}
+
+  chartsy-types@1.0.7: {}
 
   chokidar@3.6.0:
     dependencies:

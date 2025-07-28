@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "_moduleAliases": {
-    "@": "dist"
+    "@": "dist/src"
   },
   "scripts": {
     "start": "node dist/index.js",

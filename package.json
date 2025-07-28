@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.ts",
   "_moduleAliases": {
-    "@": "dist"
+    "@": "dist/src"
   },
   "scripts": {
-    "start": "node dist/index.js",
+    "prestart": "pnpm build",
+    "start": "NODE_ENV=production LOCAL=true node dist/src/index.js",
     "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
     "dist:clean": "rm -rf dist",
     "build": "pnpm dist:clean && tsc -p tsconfig.build.json",
@@ -35,6 +36,7 @@
     "@types/node": "^22.14.1",
     "@types/pg": "^8.11.13",
     "@types/supertest": "^6.0.3",
+    "chartsy-types": "^1.0.7",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9.26.0",
     "nodemon": "^3.1.9",
