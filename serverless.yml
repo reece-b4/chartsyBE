@@ -3,10 +3,13 @@ service: chartsy-api
 #point to env file/s for env vars
 useDotenv: true
 
+# cloud services provider config
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs20.x
   region: eu-west-2
+  deploymentBucket:
+    name: serverless-framework-deployments-eu-west-2-4503d36b-608c
   environment:
     NODE_ENV: production
     PGDATABASE: ${env:PGDATABASE}
@@ -19,3 +22,16 @@ functions:
       - httpApi:
           path: /{proxy+}
           method: ANY
+
+package:
+  individually: true
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: false
+    target: node20
+    exclude:
+      - aws-sdk
+    external: []
