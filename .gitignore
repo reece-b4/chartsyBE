@@ -20,5 +20,6 @@ node_modules
 .env.**
 
 dist
+serverless
 
 TODO.md
