@@ -18,7 +18,8 @@
     "db:delete": "psql -f db/seed/deleteDB.sql",
     "test": "jest",
     "empty-bucket": "aws s3 rm s3://serverless-framework-deployments-eu-west-2-4503d36b-608c --recursive",
-    "lambda:deploy": "dotenv -e .env.production -- serverless deploy"
+    "lambda:deploy": "dotenv -e .env.production -- serverless deploy",
+    "lambda:deploy:code-only": "dotenv -e .env.production -- serverless deploy function --function api"
   },
   "dependencies": {
     "@types/express": "^5.0.1",
