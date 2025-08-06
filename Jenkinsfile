@@ -1,13 +1,35 @@
 pipeline {
     agent any
 
-    // environment {
-    // }
+    environment {
+        DATABASE_URL = credentials('DATABASE_URL')
+        // how does this replace normal indication of production build?
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        GITHUB_PAT = credentials('github-pat')
+        STAGE      = 'production'
+    }
+
+// install dependencies
+// build the project
+// run tests
+// build serverless
+// deploy to AWS
+// anything else?
 
     stages {
-        stage('echo') {
+        stage('install dependencies and build') {
+            agent {
+                docker {
+                    image 'node:20.19.4-alpine'
+                    args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
+                }
+            }
             steps {
-                echo 'Hello World'
+                sh 'rm -rf node_modules'
+                sh 'npm ci --omit=optional'
+                sh 'npm ci --include=dev'
+                sh 'npm run build'
             }
         }
     }
@@ -21,3 +43,58 @@ pipeline {
         }
     }
 }
+//
+// pipeline {
+//   agent none
+//
+//   environment {
+//     AWS_REGION = 'eu-west-2'
+//     STAGE      = 'production'
+//   }
+//
+//   stages {
+//     stage('Checkout') {
+//       agent any
+//       steps {
+//         checkout scm
+//       }
+//     }
+//
+//     stage('Build and Deploy') {
+//       agent {
+//         docker {
+//           image 'node:20.19.4-alpine'
+//           args '-u node' // run as non-root
+//         }
+//       }
+//       environment {
+//         HOME = '/home/node'
+//       }
+//       steps {
+//         withCredentials([
+//           string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+//           string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY'),
+//           string(credentialsId: 'DOTENV_PROD', variable: 'DOTENV_CONTENT')
+//         ]) {
+//           sh '''
+//             echo "$DOTENV_CONTENT" > .env.production
+//             npm ci
+//             npm run build
+//             npm run build:serverlessDist
+//             npx dotenv -e .env.production serverless deploy --stage $STAGE
+//             rm .env.production
+//           '''
+//         }
+//       }
+//     }
+//   }
+//
+//   post {
+//     success {
+//       echo '✅ Deploy successful!'
+//     }
+//     failure {
+//       echo '❌ Deploy failed!'
+//     }
+//   }
+// }
