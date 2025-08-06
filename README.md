@@ -7,7 +7,7 @@ start for prod
 start for dev including build - does this pre-start run before any more scripts (node docs)
 dist clean
 empty bucket
-testing - do not have server running already?
+testing - do not have local server running already?
 build for prod
 deploy to lambda
   need to have serverless installed (best globally) CLI for managing serverless applications. It will build in the 
