@@ -111,3 +111,4 @@ serverless ESBuild is included out of the box for treeshaking to ensure upload t
 
 package manager, environment etc
 
+start cicd processes with local script pointed to in package.json, github_pat needed in .env.CICD

@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.vscode
+.serverless
+.env
+.env.*
+.env
+*.log
+db
