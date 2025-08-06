@@ -7,17 +7,18 @@
     "@": "dist/src"
   },
   "scripts": {
-    "prestart": "pnpm build",
+    "prestart": "npm build",
     "start": "NODE_ENV=production LOCAL=true node dist/src/index.js",
     "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
     "dist:clean": "rm -rf dist",
-    "build": "pnpm dist:clean && tsc -p tsconfig.build.json",
+    "build": "npm run dist:clean && tsc -p tsconfig.build.json",
     "db:create:local": "psql -c 'DROP DATABASE IF EXISTS chartsydb;' && psql -c 'CREATE DATABASE chartsydb;' && psql -f db/seed/createDB.sql && ts-node db/seed/seedDB.ts",
     "db:seed:neon": "psql -f db/seed/createDB.sql && NODE_ENV=neon ts-node db/seed/seedDB.ts",
     "db:seed": "ts-node db/seed/seedDB.ts",
     "db:delete": "psql -f db/seed/deleteDB.sql",
     "test": "jest",
     "empty-bucket": "aws s3 rm s3://serverless-framework-deployments-eu-west-2-4503d36b-608c --recursive",
+    "build:serverlessDist": "dotenv -e .env.production -- serverless package",
     "lambda:deploy": "dotenv -e .env.production -- serverless deploy",
     "lambda:deploy:code-only": "dotenv -e .env.production -- serverless deploy function --function api",
     "CI/CD_processes:start": "bash ~/src/scripts/CICD_processes.sh chartsyBE"

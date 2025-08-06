@@ -10,7 +10,7 @@ empty bucket
 testing - do not have local server running already?
 build for prod
 deploy to lambda
-  need to have serverless installed (best globally) CLI for managing serverless applications. It will build in the 
+  need to have serverless installed (best globally unless in a docker pipeline as docker will need it) CLI for managing serverless applications. It will build in the 
   @vendia/serverless-express wraps the express app so it can run in a lambda function - defined by serverless.yml
   .nvmrc NEEDS TO MATCH serverless.yml as this is what will be deployed (use latest stable version supported by lambda)
   lambda authorizations must be correct:

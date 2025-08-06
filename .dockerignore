@@ -5,6 +5,4 @@ dist
 .serverless
 .env
 .env.*
-.env
 *.log
-db
