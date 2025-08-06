@@ -32,6 +32,20 @@ pipeline {
                 sh 'npm run build'
             }
         }
+        stage('run tests') {
+            agent {
+                docker {
+                    image 'node:20.19.4-alpine'
+                    args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
+                }
+            }
+            environment {
+                NODE_ENV = 'test'
+            }
+            steps {
+                sh 'npm run test'
+            }
+        }
     }
 
     post {
