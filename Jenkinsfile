@@ -43,7 +43,7 @@ pipeline {
                 NODE_ENV = 'test'
             }
             steps {
-                sh 'npm run test'
+                sh 'DATABASE_URL=$DATABASE_URL npm run test'
             }
         }
     }
