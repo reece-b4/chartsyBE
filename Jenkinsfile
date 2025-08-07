@@ -39,11 +39,13 @@ pipeline {
                     args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
                 }
             }
-            environment {
-                NODE_ENV = 'test'
-            }
+            // global environment variables above are not available here in docker environment/agent so we declare them in this stage specifically
+                environment {
+                    NODE_ENV = 'test'
+                    DATABASE_URL = credentials('DATABASE_URL')
+                }
             steps {
-                sh 'DATABASE_URL=$DATABASE_URL npm run test'
+                sh 'npm run test'
             }
         }
     }
