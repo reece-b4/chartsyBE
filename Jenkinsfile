@@ -43,15 +43,9 @@ pipeline {
                 environment {
                     NODE_ENV = 'test'
                     PGDATABASE='chartsydb'
-                    // DATABASE_URL = credentials('DATABASE_URL')
                 }
             steps {
-                // process.env.DATABASE_URL = credentials('DATABASE_URL')
-                // echo 'process.env.DATABASE_URL: ' + process.env.DATABASE_URL
                 sh 'printenv'
-                echo 'NODE_ENV is set to: ' + NODE_ENV
-                echo 'DATABASE_URL is set to: ' + DATABASE_URL
-                echo 'env: ' + env
                 sh 'npm run test'
             }
         }

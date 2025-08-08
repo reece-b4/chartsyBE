@@ -10,8 +10,6 @@ config({
 
 let poolOptions: PoolConfig = {};
 
-// console.log('process.env: ', process.env);
-
 // neon is hosted DB
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "neon") {
   poolOptions = {
@@ -20,10 +18,6 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "neon") {
     ssl: { rejectUnauthorized: false },
   };
 }
-
-console.log("poolOptions: ", poolOptions);
-console.log("ENV: ", ENV);
-console.log("process.env.PGDATABASE: ", process.env.PGDATABASE);
 
 if (!poolOptions.connectionString && !process.env.PGDATABASE) {
   throw new Error("No PGDATABASE configured");
