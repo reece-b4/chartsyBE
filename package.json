@@ -7,7 +7,7 @@
     "@": "dist/src"
   },
   "scripts": {
-    "prestart": "npm build",
+    "prestart": "npm run build",
     "start": "NODE_ENV=production LOCAL=true node dist/src/index.js",
     "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
     "dist:clean": "rm -rf dist",
