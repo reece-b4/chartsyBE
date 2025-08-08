@@ -63,23 +63,23 @@ pipeline {
 
     //    parse exported variables from neon_branch.json)
     // jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg // "postgres"
-      HOST=$(cat neon_branch.json jq -r '.endpoints[0].host')
-    //   HOST=$(jq -r '.endpoints[0].host' neon_branch.json)
-      USER=$(jq -r '.roles[0].name // "neondb_owner"' neon_branch.json)
-      DBNAME=$(jq -r '.databases[0].name // "postgres"' neon_branch.json)
-    //   export makes the variable available to child processes
-    // use PGPASSWORD if set, otherwise use NEON_ROLE_PASSWORD
-    // 5432 is postgres default port
-      export DATABASE_URL="postgres://${USER}:${PGPASSWORD:-$NEON_ROLE_PASSWORD}@$HOST:5432/${DBNAME}"
-
-      echo "$BRANCH_NAME" > neon_branch_name.txt
-
-// is this needed again?
-    //   npm ci
-      npm run migrate
-      npm run seed
-      NODE_ENV=test DATABASE_URL="$DATABASE_URL" npm test
-            }
+//       HOST=$(cat neon_branch.json jq -r '.endpoints[0].host')
+//     //   HOST=$(jq -r '.endpoints[0].host' neon_branch.json)
+//       USER=$(jq -r '.roles[0].name // "neondb_owner"' neon_branch.json)
+//       DBNAME=$(jq -r '.databases[0].name // "postgres"' neon_branch.json)
+//     //   export makes the variable available to child processes
+//     // use PGPASSWORD if set, otherwise use NEON_ROLE_PASSWORD
+//     // 5432 is postgres default port
+//       export DATABASE_URL="postgres://${USER}:${PGPASSWORD:-$NEON_ROLE_PASSWORD}@$HOST:5432/${DBNAME}"
+// 
+//       echo "$BRANCH_NAME" > neon_branch_name.txt
+// 
+// // is this needed again?
+//     //   npm ci
+//       npm run migrate
+//       npm run seed
+//       NODE_ENV=test DATABASE_URL="$DATABASE_URL" npm test
+//             }
         }
     // stage('run tests') {
     //     agent {
