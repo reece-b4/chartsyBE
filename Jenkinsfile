@@ -1,3 +1,7 @@
+// TODO: pass in node version from nvm to docker and all processes here to ensure consistency
+// TODO: dockerfile is not used in this pipeline? confirm and delete if not needed - same with FE
+// TODO: refactor to global agent? comment the args for agent and remove if not needed as they were possibly connected to dockerfile methodology - same for FE
+
 pipeline {
     agent any
 
@@ -32,23 +36,34 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('run tests') {
+        stage('create ephemeral prod DB copy to test') {
             agent {
                 docker {
                     image 'node:20.19.4-alpine'
                     args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
                 }
             }
-            // global environment variables above are not available here in docker environment/agent so we declare them in this stage specifically
-                environment {
-                    NODE_ENV = 'test'
-                    PGDATABASE='chartsydb'
-                }
             steps {
-                sh 'printenv'
-                sh 'npm run test'
+                sh 'npm i -g neonctl'
             }
         }
+        // stage('run tests') {
+        //     agent {
+        //         docker {
+        //             image 'node:20.19.4-alpine'
+        //             args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
+        //         }
+        //     }
+        //     // global environment variables above are not available here in docker environment/agent so we declare them in this stage specifically
+        //         environment {
+        //             NODE_ENV = 'test'
+        //             PGDATABASE='chartsydb'
+        //         }
+        //     steps {
+        //         sh 'printenv'
+        //         sh 'npm run test'
+        //     }
+        // }
     }
 
     post {
