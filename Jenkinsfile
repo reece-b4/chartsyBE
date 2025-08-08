@@ -51,7 +51,7 @@ pipeline {
                 sh 'set -e'
                 // install neon CLI
                 sh 'npm i neonctl'
-                neon auth login --api-key "$NEON_API_KEY"
+                neon auth login --api-key ${NEON_API_KEY}
                 // create neon branch
                 // --compute: provision a compute endpoint for this branch immediately.Without this, the branch would exist in storage but wouldn’t have a running Postgres server to connect to
                 // output CLI output as json instead of human readable text - for easier parsing and then output to file (> neon_branch.json) from this we can parse the new branch id, connection string, endpoint host/port.
