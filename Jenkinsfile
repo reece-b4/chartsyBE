@@ -79,7 +79,7 @@ pipeline {
 //       npm run migrate
 //       npm run seed
 //       NODE_ENV=test DATABASE_URL="$DATABASE_URL" npm test
-//             }
+            }
         }
     // stage('run tests') {
     //     agent {
