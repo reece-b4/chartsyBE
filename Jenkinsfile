@@ -44,7 +44,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm i -g neonctl'
+                sh 'npm i neonctl'
             }
         }
         // stage('run tests') {
