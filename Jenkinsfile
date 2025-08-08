@@ -55,7 +55,7 @@ pipeline {
                 // create neon branch
                 // --compute: provision a compute endpoint for this branch immediately.Without this, the branch would exist in storage but wouldn’t have a running Postgres server to connect to
                 // output CLI output as json instead of human readable text - for easier parsing and then output to file (> neon_branch.json) from this we can parse the new branch id, connection string, endpoint host/port.
-                BRANCH_NAME="ci-${println new Date().time / 1000}"
+                BRANCH_NAME="ci-${new Date().time / 1000}"
                 neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$BRANCH_NAME" --compute --output json > neon_branch.json
 
     //    parse exported variables from neon_branch.json)
