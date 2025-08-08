@@ -59,6 +59,8 @@ pipeline {
                 BRANCH_NAME="ci-${new Date().time / 1000}"
                 neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$BRANCH_NAME" --compute --output json > neon_branch.json
 
+                cat ./neon_branch.json
+
     //    parse exported variables from neon_branch.json)
     // jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg // "postgres"
       HOST=$(cat neon_branch.json jq -r '.endpoints[0].host')
