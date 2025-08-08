@@ -10,6 +10,8 @@ config({
 
 let poolOptions: PoolConfig = {};
 
+console.log('process.env: ', process.env);
+
 // neon is hosted DB
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "neon") {
   poolOptions = {
