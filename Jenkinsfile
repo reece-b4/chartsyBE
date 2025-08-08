@@ -48,7 +48,7 @@ pipeline {
             }
             steps {
                 // exit on any error
-                set -e
+                sh 'set -e'
                 // install neon CLI
                 sh 'npm i neonctl'
                 neon auth login --api-key "$NEON_API_KEY"
