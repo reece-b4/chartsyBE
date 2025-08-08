@@ -55,12 +55,14 @@ pipeline {
                 // create neon branch
                 // --compute: provision a compute endpoint for this branch immediately.Without this, the branch would exist in storage but wouldn’t have a running Postgres server to connect to
                 // output CLI output as json instead of human readable text - for easier parsing and then output to file (> neon_branch.json) from this we can parse the new branch id, connection string, endpoint host/port.
+                // TODO: use date command to get current time in seconds since epoch, or use a library like moment.js
                 BRANCH_NAME="ci-${new Date().time / 1000}"
                 neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$BRANCH_NAME" --compute --output json > neon_branch.json
 
     //    parse exported variables from neon_branch.json)
     // jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg // "postgres"
-      HOST=$(jq -r '.endpoints[0].host' neon_branch.json)
+      HOST=$(neon_branch.json jq -r '.endpoints[0].host')
+    //   HOST=$(jq -r '.endpoints[0].host' neon_branch.json)
       USER=$(jq -r '.roles[0].name // "neondb_owner"' neon_branch.json)
       DBNAME=$(jq -r '.databases[0].name // "postgres"' neon_branch.json)
     //   export makes the variable available to child processes
