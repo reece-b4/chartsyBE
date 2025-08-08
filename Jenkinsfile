@@ -61,7 +61,7 @@ pipeline {
 
     //    parse exported variables from neon_branch.json)
     // jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg // "postgres"
-      HOST=$(neon_branch.json jq -r '.endpoints[0].host')
+      HOST=$(cat neon_branch.json jq -r '.endpoints[0].host')
     //   HOST=$(jq -r '.endpoints[0].host' neon_branch.json)
       USER=$(jq -r '.roles[0].name // "neondb_owner"' neon_branch.json)
       DBNAME=$(jq -r '.databases[0].name // "postgres"' neon_branch.json)
