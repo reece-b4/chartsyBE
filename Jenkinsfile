@@ -96,23 +96,23 @@ pipeline {
     // }
 
 
-stage('Cleanup (CLI)') {
-  when { always() }
-  environment {
-    NEON_API_KEY = credentials('NEON_API_KEY')
-    NEON_PROJECT_ID = credentials('NEON_PROJECT_ID')
-  }
-  steps {
-    sh '''
-      set -e
-      neon auth login --api-key "$NEON_API_KEY"
-      if [ -f neon_branch_name.txt ]; then
-        BRANCH_NAME=$(cat neon_branch_name.txt)
-        neon branches delete --project-id "$NEON_PROJECT_ID" --name "$BRANCH_NAME" --force
-      fi
-    '''
-  }
-    }
+// stage('Cleanup (CLI)') {
+//   when { always() }
+//   environment {
+//     NEON_API_KEY = credentials('NEON_API_KEY')
+//     NEON_PROJECT_ID = credentials('NEON_PROJECT_ID')
+//   }
+//   steps {
+//     sh '''
+//       set -e
+//       neon auth login --api-key "$NEON_API_KEY"
+//       if [ -f neon_branch_name.txt ]; then
+//         BRANCH_NAME=$(cat neon_branch_name.txt)
+//         neon branches delete --project-id "$NEON_PROJECT_ID" --name "$BRANCH_NAME" --force
+//       fi
+//     '''
+//   }
+//     }
 
     post {
         success {
