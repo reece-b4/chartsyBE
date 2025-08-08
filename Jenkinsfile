@@ -42,7 +42,8 @@ pipeline {
             // global environment variables above are not available here in docker environment/agent so we declare them in this stage specifically
                 environment {
                     NODE_ENV = 'test'
-                    DATABASE_URL = credentials('DATABASE_URL')
+                    PGDATABASE='chartsydb'
+                    // DATABASE_URL = credentials('DATABASE_URL')
                 }
             steps {
                 // process.env.DATABASE_URL = credentials('DATABASE_URL')
