@@ -14,6 +14,11 @@ pipeline {
         GITHUB_PAT = credentials('github-pat')
         STAGE      = 'production'
         NEON_API_KEY = credentials('NEON_API_KEY')
+        NEON_PROJECT_ID = credentials('NEON_PROJECT_ID')
+        NEON_PARENT_BRANCH_ID = credentials('NEON_PARENT_BRANCH_ID')
+    // TODO: PUT THIS IN RELEVANT STAGE: and same for all env vars
+    // not a credential, can be hardcoded
+    // PGDATABASE = 'chartsydb'
     }
 
 // install dependencies
@@ -42,8 +47,8 @@ pipeline {
             agent {
                 docker {
                     image 'node:20.19.4-alpine'
-                    // running as user node prevents installing packages globally as global installs dir belongs to root
-                    args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
+                    // running as user node prevents installing packages globally as global installs dir belongs to root - setting to root for installation of jq
+                    args '-u root -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
                 }
             }
             steps {
@@ -51,21 +56,56 @@ pipeline {
                 sh '''set -e
                 # install neon CLI
                 npm i neonctl
-                npx neon auth --api-key $NEON_API_KEY
+                RUN apk add --no-cache jq
+                neon --version
+                # npx neon auth --api-key "$NEON_API_KEY"
                 # create neon branch
                 # --compute: provision a compute endpoint for this branch immediately.#Without this, the branch would exist in storage but wouldn’t have a #running Postgres server to connect to
                 # output CLI output as json instead of human readable text - for easier #parsing and then output to file (> neon_branch.json) from this we can #parse the new branch id, connection string, endpoint host/port.
                 # TODO: use date command to get current time in seconds since epoch, or use #a library like moment.js
                 BRANCH_NAME="ci-$(date +%s)"
-                # neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$BRANCH_NAME" --compute --output json > neon_branch.json
+                npx neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$BRANCH_NAME" --compute --output json > neon_branch.json --api-key "$NEON_API_KEY"
 
                 # cat ./neon_branch.json
+
+                # parse exported variables from neon_branch.json)
+                # jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg  "postgres"
+            HOST=$(jq -r '.endpoints[0].host // empty' neon_branch.json)
+           USER=$(jq -r '.roles[0].name // "neondb_owner"' neon_branch.json)
+           DBNAME=$(jq -r '.databases[0].name // "postgres"' neon_branch.json)
+            # export makes the variable available to child processes
+                # use PGPASSWORD if set, otherwise use NEON_ROLE_PASSWORD
+          #5432 is postgres default port
+              # Build DATABASE_URL with/without password safely
+    #   if [ -n "${PGPASSWORD:-${NEON_ROLE_PASSWORD:-}}" ]; then
+    #     DATABASE_URL="postgres://${USER}:${PGPASSWORD:-$NEON_ROLE_PASSWORD}@${HOST}:5432/${DBNAME}"
+    #   else
+    #     DATABASE_URL="postgres://${USER}@${HOST}:5432/${DBNAME}"
+    #   fi
+
+
+CONN_JSON="$(npx neon connection-string "$BRANCH_NAME" \
+  --project-id "$NEON_PROJECT_ID" \
+  --output json \
+  --api-key "$NEON_API_KEY")"
+
+# With jq
+DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
+
+# If you don’t want jq, use Node:
+# DATABASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).connection_string)' "$CONN_JSON")"
+
+       export DATABASE_URL
+       
+    #       npm run migrate
+    #       npm run seed
+         NODE_ENV=neon DATABASE_URL="$DATABASE_URL" npm test
                 '''
             // other code
             }
         }
     }
-// stage('Cleanup (CLI)')
+// stage('Cleanup (CLI)')!!!!!!!!!!!!!!!!!!!
 
     post {
         success {

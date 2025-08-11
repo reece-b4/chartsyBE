@@ -9,16 +9,31 @@ import tasks from "../db/data/tasks.json";
 
 const tasksJson = tasks.tasks as TaskInput[];
 afterEach(async () => {
+  // code: 'ECONNREFUSED',
+          // syscall: 'connect',
+          // address: '::1',
+          // port: 5432
+          // trying to connect to postgres on port 5432 when we want to connect to neon ephemeral db branch
+
+  // THIS IS LOCAL TESTING ONLY!!!!!
+  
+  // HERE!!!!!!!!!   NEW ERROR: Error: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+
+  
+  // DB IS NOT BEING SEEDED AFTER EACH. we dont want it to anyway during db clone testing but we dont want this to run so put in a conditional ie, node env being !=neon
+  // TESTS ARE STILL FAILING!!!
   return await runSeed(tasksJson);
 });
 
 afterAll(async () => {
   console.log("Closing database connection");
+  // JEST IS HANGING AT THE END OF NEON TESTS
   return db.end();
 });
 
 describe("GET /api/not-a-valid-path", () => {
   test("404 - given non existent path responds with message path not found <GLOBAL>", () => {
+    // IS THIS A LOCAL API BEING RAN? I THINK SO
     return request(app)
       .get("/api/not-a-path")
       .expect(404)
