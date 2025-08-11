@@ -56,9 +56,8 @@ pipeline {
                 sh '''set -e
                 # install neon CLI
                 npm i neonctl
-                RUN apk add --no-cache jq
-                neon --version
-                # npx neon auth --api-key "$NEON_API_KEY"
+                apk add --no-cache jq
+
                 # create neon branch
                 # --compute: provision a compute endpoint for this branch immediately.#Without this, the branch would exist in storage but wouldn’t have a #running Postgres server to connect to
                 # output CLI output as json instead of human readable text - for easier #parsing and then output to file (> neon_branch.json) from this we can #parse the new branch id, connection string, endpoint host/port.
@@ -83,7 +82,8 @@ pipeline {
     #     DATABASE_URL="postgres://${USER}@${HOST}:5432/${DBNAME}"
     #   fi
 
-
+# get connection string with password etc rather than manually getting each part
+# TODO: remove unusued vars for database_URL, host etc
 CONN_JSON="$(npx neon connection-string "$BRANCH_NAME" \
   --project-id "$NEON_PROJECT_ID" \
   --output json \
@@ -92,11 +92,11 @@ CONN_JSON="$(npx neon connection-string "$BRANCH_NAME" \
 # With jq
 DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
 
-# If you don’t want jq, use Node:
+
 # DATABASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).connection_string)' "$CONN_JSON")"
 
        export DATABASE_URL
-       
+
     #       npm run migrate
     #       npm run seed
          NODE_ENV=neon DATABASE_URL="$DATABASE_URL" npm test
