@@ -109,7 +109,7 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
     }
 
     post {
-                when { always() }
+            always {
         steps {
             sh '''
       set -e
