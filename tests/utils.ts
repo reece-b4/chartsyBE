@@ -28,10 +28,12 @@ export const validateTask = (task: Task): void => {
   expect(() => new Date(task.due)).not.toThrow();
   expect(() => new Date(task.created_at)).not.toThrow();
   expect(() => new Date(task.updated_at)).not.toThrow();
+  console.log('expect created at to be less than now')
   expect(new Date(task.created_at).getTime()).toBeLessThan(
     new Date().getTime()
   );
   if (task.updated_at) {
+    console.log('in if block for task.updated_at for task.updated_at')
     expect(new Date(task.updated_at).getTime()).toBeLessThan(
       new Date().getTime()
     );
