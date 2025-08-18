@@ -101,7 +101,7 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
 
     #       npm run migrate
     #       npm run seed
-         NODE_ENV=neon DATABASE_URL="$DATABASE_URL" npm test
+         NODE_ENV=neon:ephemeral DATABASE_URL="$DATABASE_URL" npm test
                 '''
             // other code
             }

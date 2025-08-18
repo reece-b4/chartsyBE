@@ -11,7 +11,7 @@ config({
 let poolOptions: PoolConfig = {};
 
 // neon is hosted DB
-if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "neon") {
+if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "neon" ||process.env.NODE_ENV === "neon:ephemeral") {
   poolOptions = {
     connectionString: process.env.DATABASE_URL,
     // false because neon uses self-signed certificates

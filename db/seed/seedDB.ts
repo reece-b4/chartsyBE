@@ -35,7 +35,9 @@ const postTasks = async (tasks: TaskInput[]) => {
   }
 };
 console.log('processing.env.NODE_ENV', process.env.NODE_ENV);
-if (process.env.NODE_ENV !== "test") {
+// We do not want to end db in test environment
+// we do not want to seed in neon ephemeral branch tests
+if (process.env.NODE_ENV !== "test" && process.env.NODE_ENV !== "neon:ephemeral") {
   (async () => {
     console.time("Seeding tasks");
     await runSeed(tasksJson);

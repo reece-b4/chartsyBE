@@ -13,7 +13,7 @@
     "dist:clean": "rm -rf dist",
     "build": "npm run dist:clean && tsc -p tsconfig.build.json",
     "db:create:local": "psql -c 'DROP DATABASE IF EXISTS chartsydb;' && psql -c 'CREATE DATABASE chartsydb;' && psql -f db/seed/createDB.sql && ts-node db/seed/seedDB.ts",
-    "db:seed:neon": "NODE_ENV=neon ts-node db/seed/seedDB.ts",
+    "db:seed:neon:prod": "NODE_ENV=neon ts-node db/seed/seedDB.ts",
     "db:seed": "ts-node db/seed/seedDB.ts",
     "db:delete": "psql -f db/seed/deleteDB.sql",
     "test": "jest",
