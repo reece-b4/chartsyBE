@@ -34,7 +34,7 @@ const postTasks = async (tasks: TaskInput[]) => {
     }
   }
 };
-
+console.log('processing.env.NODE_ENV', process.env.NODE_ENV);
 if (process.env.NODE_ENV !== "test") {
   (async () => {
     console.time("Seeding tasks");
