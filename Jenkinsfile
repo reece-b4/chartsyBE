@@ -114,7 +114,7 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
       set -e
     # TODO: deleting neon branch name using force not recommended - is there another way/just remove force flag
       if [ -n "$EPHEMERAL_BRANCH_NAME" ]; then
-        npx neon branches delete --project-id "$NEON_PROJECT_ID" --name "$EPHEMERAL_BRANCH_NAME" --api-key "$NEON_API_KEY"
+        npx neon branches delete "$EPHEMERAL_BRANCH_NAME" --project-id "$NEON_PROJECT_ID" --api-key "$NEON_API_KEY"
       fi
     '''
             }
