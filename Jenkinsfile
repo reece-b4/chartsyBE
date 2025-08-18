@@ -126,4 +126,5 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
             echo '❌ Deployment failed.'
         }
     }
+    }
 }
