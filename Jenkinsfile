@@ -49,7 +49,7 @@ pipeline {
                 docker {
                     image 'node:20.19.4-alpine'
                     // running as user node prevents installing packages globally as global installs dir belongs to root - setting to root for installation of jq
-                    args '-u root -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root
+                    args '-u root -e NPM_CONFIG_CACHE=/home/node/.npm' // running as root here for global install of jq
                 }
             }
             steps {
@@ -93,26 +93,29 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
   --api-key "$NEON_API_KEY")"
 
 # With jq
-# DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
+DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
 
 # DATABASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).connection_string)' "$CONN_JSON")"
 
+# exporting here overrides the global DATABASE_URL env var for this shell step only
        export DATABASE_URL
 
     #       npm run migrate
     #       npm run seed
          NODE_ENV=neon:ephemeral DATABASE_URL="$DATABASE_URL" npm test
                 '''
-            // other code
             }
         }
     }
+    // currently no connection string exists
+    // need to overwrite global database_url with the ephemeral branch database_url
+
+    // DEPLOYMENT STAGE - if tests pass only
 
     post {
             always {
             sh '''
       set -e
-    # TODO: deleting neon branch name using force not recommended - is there another way/just remove force flag
       if [ -n "$EPHEMERAL_BRANCH_NAME" ]; then
         npx neon branches delete "$EPHEMERAL_BRANCH_NAME" --project-id "$NEON_PROJECT_ID" --api-key "$NEON_API_KEY"
       fi

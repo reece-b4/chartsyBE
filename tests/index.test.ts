@@ -7,12 +7,13 @@ import { runSeed } from "../db/seed/seedDB";
 import { TaskInput } from "@/types";
 import tasks from "../db/data/tasks.json";
 
+let counter = 0
+
 const tasksJson = tasks.tasks as TaskInput[];
 afterEach(async () => {
-  for (let i= 0; i < tasksJson.length; i++) {
 
-    console.log('after each func jest: ', i)
-  }
+    console.log('after each func jest: ', counter)
+    counter++
 if (process.env.NODE_ENV !== "neon:ephemeral") {
   return await runSeed(tasksJson);}
 });
