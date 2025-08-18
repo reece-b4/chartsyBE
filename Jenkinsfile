@@ -59,6 +59,7 @@ pipeline {
                 // exit on any error
                 sh '''set -e
                 # install neon CLI
+                # is this needed as npx can install ad-hoc? better to have it installed manually as we can specify?
                 npm i neonctl@2.15.0
                 apk add --no-cache jq
 
@@ -72,33 +73,20 @@ pipeline {
 
                 # parse exported variables from neon_branch.json)
                 # jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg  "postgres"
-            HOST=$(jq -r '.endpoints[0].host // empty' neon_branch.json)
-           USER=$(jq -r '.roles[0].name // "neondb_owner"' neon_branch.json)
-           DBNAME=$(jq -r '.databases[0].name // "postgres"' neon_branch.json)
-            # export makes the variable available to child processes
-                # use PGPASSWORD if set, otherwise use NEON_ROLE_PASSWORD
-          #5432 is postgres default port
-              # Build DATABASE_URL with/without password safely
-    #   if [ -n "${PGPASSWORD:-${NEON_ROLE_PASSWORD:-}}" ]; then
-    #     DATABASE_URL="postgres://${USER}:${PGPASSWORD:-$NEON_ROLE_PASSWORD}@${HOST}:5432/${DBNAME}"
-    #   else
-    #     DATABASE_URL="postgres://${USER}@${HOST}:5432/${DBNAME}"
-    #   fi
 
 # get connection string with password etc rather than manually getting each part
-# TODO: remove unusued vars for database_URL, host etc
-CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
-  --project-id "$NEON_PROJECT_ID" \
-  --output json \
-  --api-key "$NEON_API_KEY")"
 
-# With jq
-DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
+# get connection string from neon branch
+# pipe into jq to get the parsed connection string
+# exporting here overrides the global DATABASE_URL env var for this shell step onl
 
-# DATABASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).connection_string)' "$CONN_JSON")"
-
-# exporting here overrides the global DATABASE_URL env var for this shell step only
-       export DATABASE_URL
+       export DATABASE_URL="$(
+  npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
+    --project-id "$NEON_PROJECT_ID" \
+    --pooler \
+    --output json \
+    --api-key "$NEON_API_KEY" \
+)"
 
     #       npm run migrate
     #       npm run seed
