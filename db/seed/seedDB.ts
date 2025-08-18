@@ -5,6 +5,7 @@ import { isValidISODateString } from "../utils/index";
 const tasksJson = tasks.tasks as TaskInput[];
 
 export const runSeed = async (tasks: TaskInput[]) => {
+  console.log("Seeding tasks...");
   await db.query(`TRUNCATE TABLE tasks RESTART IDENTITY CASCADE;`);
   await postTasks(tasks);
 };

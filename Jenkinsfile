@@ -90,7 +90,7 @@ CONN_JSON="$(npx neon connection-string "$BRANCH_NAME" \
   --api-key "$NEON_API_KEY")"
 
 # With jq
-DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
+# DATABASE_URL="$(echo "$CONN_JSON" | jq -r '.connection_string')"
 
 
 # DATABASE_URL="$(node -e 'console.log(JSON.parse(process.argv[1]).connection_string)' "$CONN_JSON")"
