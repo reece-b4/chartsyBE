@@ -16,7 +16,7 @@ pipeline {
         NEON_API_KEY = credentials('NEON_API_KEY')
         NEON_PROJECT_ID = credentials('NEON_PROJECT_ID')
         NEON_PARENT_BRANCH_ID = credentials('NEON_PARENT_BRANCH_ID')
-        EPHEMERAL_BRANCH_NAME = 'not-set' // this is used to create ephemeral branch and delete the branch at the end of the pipeline
+        EPHEMERAL_BRANCH_NAME = "ci-${System.currentTimeMillis()}" // this is used to create ephemeral branch and delete the branch at the end of the pipeline
     // TODO: PUT THIS IN RELEVANT STAGE: and same for all env vars
     // not a credential, can be hardcoded
     // PGDATABASE = 'chartsydb'
@@ -53,13 +53,13 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    env.EPHEMERAL_BRANCH_NAME = "ci-${System.currentTimeMillis()}"
-                }
+                // script {
+                //     withEnv([EPHEMERAL_BRANCH_NAME = "ci-${System.currentTimeMillis()}"])
+                // }
                 // exit on any error
                 sh '''set -e
                 # install neon CLI
-                npm i neonctl@1.15.0
+                npm i neonctl@2.15.0
                 apk add --no-cache jq
 
                 # create neon branch
@@ -113,7 +113,7 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
             sh '''
       set -e
     # TODO: deleting neon branch name using force not recommended - is there another way/just remove force flag
-      if [ -n "$EPHEMERAL" ] && [ "$EPHEMERAL" != "not-set" ]; then
+      if [ -n "$EPHEMERAL_BRANCH_NAME" ]; then
         npx neon branches delete --project-id "$NEON_PROJECT_ID" --name "$EPHEMERAL_BRANCH_NAME" --api-key "$NEON_API_KEY"
       fi
     '''
