@@ -54,7 +54,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.EPHEMERAL_BRANCH_NAME="ci-${System.currentTimeMillis()}"
+                    env.EPHEMERAL_BRANCH_NAME = "ci-${System.currentTimeMillis()}"
                 }
                 // exit on any error
                 sh '''set -e
@@ -110,7 +110,6 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
 
     post {
             always {
-        steps {
             sh '''
       set -e
     # TODO: deleting neon branch name using force not recommended - is there another way/just remove force flag
@@ -118,13 +117,12 @@ CONN_JSON="$(npx neon connection-string "$EPHEMERAL_BRANCH_NAME" \
         npx neon branches delete --project-id "$NEON_PROJECT_ID" --name "$EPHEMERAL_BRANCH_NAME" --api-key "$NEON_API_KEY"
       fi
     '''
-        }
+            }
         success {
             echo '✅ Deployment successful!'
         }
         failure {
             echo '❌ Deployment failed.'
         }
-    }
     }
 }
