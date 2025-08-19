@@ -94,9 +94,25 @@ pipeline {
                 '''
             }
         }
+        stage('deploy to AWS lambda') {
+            // ensure tests have passed
+            // do not run this stage if tests have failed
+            // install serverless globally
+            // build serverless package
+            // deploy to AWS lambda code only
+            agent {
+                docker {
+                    image 'node:20.19.4-alpine'
+                    args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root (node user)
+                }
+            }
+            steps {
+                sh '''
+                set -e
+                '''
     }
-    // currently no connection string exists
-    // need to overwrite global database_url with the ephemeral branch database_url
+        }
+    }
 
     // DEPLOYMENT STAGE - if tests pass only
 
