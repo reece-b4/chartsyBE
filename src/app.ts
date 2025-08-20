@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api", (_req, res) => {
-  res.status(200).json({ msg: "get request received, 200 OK" });
+  res.status(200).json({ msg: "get request received, 200 OK test" });
 });
 
 app.get("/api/task/:id", getTaskById);
