@@ -11,9 +11,6 @@ let counter = 0
 
 const tasksJson = tasks.tasks as TaskInput[];
 afterEach(async () => {
-
-    console.log('after each func jest: ', counter)
-    counter++
 if (process.env.NODE_ENV !== "neon:ephemeral") {
   return await runSeed(tasksJson);}
 });
@@ -24,7 +21,6 @@ afterAll(async () => {
 });
 
 describe("GET /api/not-a-valid-path", () => {
-  console.log("running first test")
   test("404 - given non existent path responds with message path not found <GLOBAL>", () => {
     // IS THIS A LOCAL API BEING RAN? I THINK SO
     return request(app)

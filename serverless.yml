@@ -15,7 +15,6 @@ provider:
     name: serverless-framework-deployments-eu-west-2-4503d36b-608c
   environment:
     NODE_ENV: production
-    PGDATABASE: ${env:PGDATABASE}
     DATABASE_URL: ${env:DATABASE_URL}
 
 functions:
