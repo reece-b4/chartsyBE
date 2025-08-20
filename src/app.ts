@@ -4,12 +4,28 @@ import { notAPath } from "@/errorhandling/index";
 import { customErrors, sqlErrors, serverErrors } from "@/errorhandling/index";
 import { getAllTasks, getTaskById, postTask } from "@/controllers/tasks.controller";
 
+const allowlist = [
+  'http://localhost:5173',
+  'https://dck7gx4ukouvd.cloudfront.net',
+];
+
 export const app = express();
-app.use(cors());
+app.use(cors({
+  origin(origin, cb) {
+    if (!origin) return cb(null, true);             // allow curl/Postman
+    cb(null, allowlist.includes(origin));
+  },
+  credentials: true,
+}));
+// Ensure preflight works for every route
+app.options('*', cors());
 app.use(express.json());
 
+// src/app.ts (near other routes)
+app.get('/healthz', (_req, res) => res.json({ ok: true, ts: Date.now() }));
+
 app.get("/api", (_req, res) => {
-  res.status(200).json({ msg: "get request received, 200 OK test" });
+  res.status(200).json({ msg: "get request received, 200 OK test2" });
 });
 
 app.get("/api/task/:id", getTaskById);
@@ -21,3 +37,13 @@ app.all("/api/*", notAPath);
 app.use(customErrors);
 app.use(sqlErrors);
 app.use(serverErrors);
+
+// cors error handler
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const origin = allowlist.includes(req.headers.origin as string)
+    ? req.headers.origin
+    : '';
+  res.set('Access-Control-Allow-Origin', origin);
+  res.set('Access-Control-Allow-Credentials', 'true');
+  res.status(err.status || 500).json({ error: err.message || 'Internal' });
+});

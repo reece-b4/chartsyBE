@@ -123,3 +123,5 @@ llambda function name is structured:
 equalling currently for this project:
 chartsy-api-dev-api
 or service: chartsy-api, stage: dev, functionalLogicalName: api
+
+had issues with cors after finishing jenkins pipeline (unknown cause of change - TODO: find out WHY? cors had basic setup and was working then was deployed via jenkins and immediately broke and needed expanded setup in serverless.yml) in serverless.yml I have explicitly added localhost:5173 as an origin - THIS MAY NEED TO BE CHANGED IF FE LOCALHOST CHANGES DURING DEVELOPMENT
