@@ -115,7 +115,8 @@ stage('deploy to AWS lambda') {
                   #npm ci --omit=optional
 
                   # Install Serverless CLI locally (v3 pinned for reproducibility)
-                  npx --yes serverless@3 --version
+                  npm i -D serverless@3
+                  npx serverless --version
 
                   # Optional: show info before deploy (useful on first run). prints true if fails
                    npx serverless info --stage "$STAGE" --region "$AWS_REGION" || true
