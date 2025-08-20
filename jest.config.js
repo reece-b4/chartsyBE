@@ -1,7 +1,8 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
-  preset: 'ts-jest',
+  preset: require.resolve('ts-jest'),
   testEnvironment: "node",
+    rootDir: '.',
   transform: {
     "^.+\.tsx?$": ["ts-jest",{}],
   },
