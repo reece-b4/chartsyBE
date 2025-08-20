@@ -22,10 +22,8 @@ app.options('*', cors());
 app.use(express.json());
 
 // src/app.ts (near other routes)
-app.get('/healthz', (_req, res) => res.json({ ok: true, ts: Date.now() }));
-
 app.get("/api", (_req, res) => {
-  res.status(200).json({ msg: "get request received, 200 OK test2" });
+  res.status(200).json({ msg: "get request received, 200 OK test3" });
 });
 
 app.get("/api/task/:id", getTaskById);
