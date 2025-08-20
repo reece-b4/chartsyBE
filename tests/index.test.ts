@@ -32,7 +32,7 @@ describe("GET /api/not-a-valid-path", () => {
 
 describe("/api", () => {
   describe("GET", () => {
-    test("Status: 200 - Returns message - get request received, 200 OK", () => {
+    test("Status: 200 - Returns message - get request received, 200 OK test3", () => {
       return request(app)
         .get("/api")
         .expect(200)
