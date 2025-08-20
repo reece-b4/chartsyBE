@@ -7,8 +7,6 @@ import { runSeed } from "../db/seed/seedDB";
 import { TaskInput } from "@/types";
 import tasks from "../db/data/tasks.json";
 
-let counter = 0
-
 const tasksJson = tasks.tasks as TaskInput[];
 afterEach(async () => {
 if (process.env.NODE_ENV !== "neon:ephemeral") {
