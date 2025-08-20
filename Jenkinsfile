@@ -24,13 +24,6 @@ pipeline {
     // PGDATABASE = 'chartsydb'
     }
 
-// install dependencies
-// build the project
-// run tests
-// build serverless
-// deploy to AWS
-// anything else?
-
     stages {
         stage('install dependencies and build') {
             agent {
@@ -55,9 +48,6 @@ pipeline {
                 }
             }
             steps {
-                // script {
-                //     withEnv([EPHEMERAL_BRANCH_NAME = "ci-${System.currentTimeMillis()}"])
-                // }
                 // exit on any error
                 sh '''set -e
                 # install neon CLI
@@ -137,8 +127,6 @@ stage('deploy to AWS lambda') {
             }
         }
     }
-
-    // DEPLOYMENT STAGE - if tests pass only
 
     post {
             always {
