@@ -3,6 +3,9 @@ service: chartsy-api
 #point to env file/s for env vars
 useDotenv: true
 
+#ensure serverless framework version is specified for consistency (not grabbing latest version with unpredictable results)
+frameworkVersion: '3'
+
 # cloud services provider config
 provider:
   name: aws
