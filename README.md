@@ -115,3 +115,11 @@ start cicd processes with local script pointed to in package.json, github_pat ne
 
 jenkins pipeline will create an ephemeral copy of prod DB to test realistic data
 it will mask sensitive data to protect said data if there is a security breach
+
+gitpat for cicd processes script is in .env.CICD in repo
+
+llambda function name is structured:
+<service>-<stage>-<functionLogicalName>
+equalling currently for this project:
+chartsy-api-dev-api
+or service: chartsy-api, stage: dev, functionalLogicalName: api

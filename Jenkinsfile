@@ -12,7 +12,9 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         GITHUB_PAT = credentials('github-pat')
-        STAGE      = 'production'
+        STAGE      = 'dev'
+        // TODO: if creating full dev/QA/prod pipeline then create env var dynamically similarly to below
+        // STAGE = "${BRANCH_NAME == 'main' ? 'production' : 'dev'}"
         NEON_API_KEY = credentials('NEON_API_KEY')
         NEON_PROJECT_ID = credentials('NEON_PROJECT_ID')
         NEON_PARENT_BRANCH_ID = credentials('NEON_PARENT_BRANCH_ID')
@@ -94,23 +96,44 @@ pipeline {
                 '''
             }
         }
-        stage('deploy to AWS lambda') {
-            // ensure tests have passed
-            // do not run this stage if tests have failed
-            // install serverless globally
-            // build serverless package
-            // deploy to AWS lambda code only
+stage('deploy to AWS lambda') {
+            // This stage only runs if previous stages succeeded.
             agent {
                 docker {
                     image 'node:20.19.4-alpine'
                     args '-u node -e NPM_CONFIG_CACHE=/home/node/.npm' // run as non-root (node user)
                 }
             }
+            environment {
+                AWS_REGION = 'eu-west-2' // adjust if needed
+            }
             steps {
                 sh '''
-                set -e
+                  set -e
+
+                  # Install deps needed by serverless plugins (if any) and the CLI itself
+                  #npm ci --omit=optional
+
+                  # Install Serverless CLI locally (v3 pinned for reproducibility)
+                  npx --yes serverless@3 --version
+
+                  # Optional: show info before deploy (useful on first run)
+                   npx serverless info --stage "$STAGE" --region "$AWS_REGION" || true
+
+                  # Package (helps surface build errors before deploy)
+                  npx serverless package --stage "$STAGE" --region "$AWS_REGION"
+
+                  # Full deploy (CloudFormation + Lambda code)
+                  # If you want "code-only" updates later: use
+                  npx serverless deploy function --function api --stage "$STAGE" --region "$AWS_REGION"
+
+                # Uncomment the next line to deploy the entire service or adapt to take in argument
+                  #npx serverless deploy --stage "$STAGE" --region "$AWS_REGION" --conceal
+
+                  echo "---- Deployed service info ----"
+                  npx serverless info --stage "$STAGE" --region "$AWS_REGION"
                 '''
-    }
+            }
         }
     }
 
