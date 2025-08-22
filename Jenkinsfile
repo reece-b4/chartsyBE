@@ -39,6 +39,7 @@ pipeline {
                 sh 'npm run build'
             }
         }
+
         stage('create ephemeral prod DB copy and test') {
             agent {
                 docker {
@@ -55,7 +56,7 @@ pipeline {
                 sh '''
   ./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2 || true
 '''
-sh'''
+                sh'''
                 # install neon CLI
                 # is this needed as npx can install ad-hoc? better to have it installed manually as we can specify?
                 npm i neonctl@2.15.0
@@ -68,7 +69,7 @@ sh'''
                 npx neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$EPHEMERAL_BRANCH_NAME" --compute --output json > neon_branch.json --api-key "$NEON_API_KEY"
 
                 #./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2
-                ./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2
+                #./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2
 
                 # cat ./neon_branch.json
 
@@ -95,7 +96,7 @@ sh'''
                 '''
             }
         }
-stage('deploy to AWS lambda') {
+        stage('deploy to AWS lambda') {
             // This stage only runs if previous stages succeeded.
             agent {
                 docker {
