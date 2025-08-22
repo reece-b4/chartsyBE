@@ -1,12 +1,24 @@
+// /** @type {import('ts-jest').JestConfigWithTsJest} **/
+// module.exports = {
+//   preset: 'ts-jest/preset',
+//   testEnvironment: 'node',
+//   rootDir: '.',
+//   transform: {
+//     '^.+\\.tsx?$': ['ts-jest', {}],
+//   },
+//   moduleNameMapper: {
+//     '^@/(.*)$': '<rootDir>/src/$1',
+//   },
+// };
+
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
-  preset: 'ts-jest/preset',
-  testEnvironment: 'node',
-  rootDir: '.',
+  preset: 'ts-jest',
+  testEnvironment: "node",
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {}],
+    "^.+\.tsx?$": ["ts-jest",{}],
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
+    '^@/(.*)$': '<rootDir>/src/$1'
+  }
 };

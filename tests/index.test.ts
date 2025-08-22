@@ -9,8 +9,9 @@ import tasks from "../db/data/tasks.json";
 
 const tasksJson = tasks.tasks as TaskInput[];
 afterEach(async () => {
-if (process.env.NODE_ENV !== "neon:ephemeral") {
-  return await runSeed(tasksJson);}
+  if (process.env.NODE_ENV !== "neon:ephemeral") {
+    return await runSeed(tasksJson);
+  }
 });
 
 afterAll(async () => {
@@ -37,7 +38,7 @@ describe("/api", () => {
         .get("/api")
         .expect(200)
         .then((response) => {
-          expect(response.body.msg).toEqual("get request received, 200 OK");
+          expect(response.body.msg).toEqual("get request received, 200 OK test3");
         });
     });
   });
