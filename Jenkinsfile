@@ -50,13 +50,8 @@ pipeline {
             }
             steps {
                 // exit on any error
-                sh '''set -e
-                npm ci
-                '''
-                sh '''
-  ./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2 || true
-'''
                 sh'''
+                set -e
                 # install neon CLI
                 # is this needed as npx can install ad-hoc? better to have it installed manually as we can specify?
                 npm i neonctl@2.15.0
@@ -67,11 +62,6 @@ pipeline {
                 # output CLI output as json instead of human readable text - for easier #parsing and then output to file (> neon_branch.json) from this we can #parse the new branch id, connection string, endpoint host/port.
                 # TODO: use date command to get current time in seconds since epoch, or use #a library like moment.js
                 npx neon branches create --project-id "$NEON_PROJECT_ID" --parent "$NEON_PARENT_BRANCH_ID" --name "$EPHEMERAL_BRANCH_NAME" --compute --output json > neon_branch.json --api-key "$NEON_API_KEY"
-
-                #./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2
-                #./node_modules/.bin/jest --showConfig | grep -E "rootDir|preset" -A2 -B2
-
-                # cat ./neon_branch.json
 
                 # parse exported variables from neon_branch.json)
                 # jq: command line parser for JSON -r raw output (do not wrap strings in quotes), retrieve the first endpoints host etc with fallbacks eg  "postgres"
