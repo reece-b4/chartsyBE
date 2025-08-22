@@ -23,7 +23,7 @@ app.use(express.json());
 
 // src/app.ts (near other routes)
 app.get("/api", (_req, res) => {
-  res.status(200).json({ msg: "get request received, 200 OK test3" });
+  res.status(200).json({ msg: "get request received, 200 OK test4" });
 });
 
 app.get("/api/task/:id", getTaskById);

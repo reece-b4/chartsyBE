@@ -33,12 +33,12 @@ describe("GET /api/not-a-valid-path", () => {
 
 describe("/api", () => {
   describe("GET", () => {
-    test("Status: 200 - Returns message - get request received, 200 OK test3", () => {
+    test("Status: 200 - Returns message - get request received, 200 OK test4", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then((response) => {
-          expect(response.body.msg).toEqual("get request received, 200 OK test3");
+          expect(response.body.msg).toEqual("get request received, 200 OK test4");
         });
     });
   });
