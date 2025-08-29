@@ -1,0 +1,15 @@
+[
+  { "collection_name": "Getting Started", "item_name": "First item",            "icon": "📝" },
+  { "collection_name": "Work",            "item_name": "Quarterly Plan",        "icon": "🗒️" },
+  { "collection_name": "Work",            "item_name": "Hiring Pipeline",       "icon": "👥" },
+  { "collection_name": "Personal",        "item_name": "Groceries",             "icon": "🛒" },
+  { "collection_name": "Personal",        "item_name": "Books to Read",         "icon": "📚" },
+  { "collection_name": "Fitness",         "item_name": "Workout Log",           "icon": "📈" },
+  { "collection_name": "Fitness",         "item_name": "Bodyweight Tracker",    "icon": "⚖️" },
+  { "collection_name": "Finance",         "item_name": "Monthly Budget",        "icon": "📊" },
+  { "collection_name": "Finance",         "item_name": "Investments Watchlist", "icon": "👀" },
+  { "collection_name": "Recipes",         "item_name": "Weeknight Dinners",     "icon": "🍝" },
+  { "collection_name": "Recipes",         "item_name": "Bakes & Desserts",      "icon": "🧁" },
+  { "collection_name": "Travel",          "item_name": "Italy 2026",            "icon": "🇮🇹" },
+  { "collection_name": "Travel",          "item_name": "Packing List",          "icon": "🧳" }
+]

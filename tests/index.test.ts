@@ -21,7 +21,6 @@ afterAll(async () => {
 
 describe("GET /api/not-a-valid-path", () => {
   test("404 - given non existent path responds with message path not found <GLOBAL>", () => {
-    // IS THIS A LOCAL API BEING RAN? I THINK SO
     return request(app)
       .get("/api/not-a-path")
       .expect(404)

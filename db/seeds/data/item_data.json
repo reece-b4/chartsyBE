@@ -1,0 +1,21 @@
+[
+  { "collection_name": "Getting Started", "item_name": "First item",            "data_type": "text", "data": "Hello from your new schema!" },
+
+  { "collection_name": "Work",     "item_name": "Quarterly Plan",        "data_type": "text", "data": "Q4 goals: CI/CD, UX polish, onboarding revamp." },
+  { "collection_name": "Work",     "item_name": "Hiring Pipeline",       "data_type": "text", "data": "Backend dev, QA engineer, PM intern." },
+
+  { "collection_name": "Personal", "item_name": "Groceries",             "data_type": "text", "data": "Milk, eggs, coffee, spinach, bananas." },
+  { "collection_name": "Personal", "item_name": "Books to Read",         "data_type": "text", "data": "Clean Code; DDIA; Refactoring UI; Designing APIs." },
+
+  { "collection_name": "Fitness",  "item_name": "Workout Log",           "data_type": "text", "data": "Push/Pull/Legs split; 3x/week." },
+  { "collection_name": "Fitness",  "item_name": "Bodyweight Tracker",    "data_type": "text", "data": "Target: -3kg in 8 weeks." },
+
+  { "collection_name": "Finance",  "item_name": "Monthly Budget",        "data_type": "text", "data": "Limit eating out to £120/mo." },
+  { "collection_name": "Finance",  "item_name": "Investments Watchlist", "data_type": "text", "data": "MSFT, NVDA, AAPL, AMD." },
+
+  { "collection_name": "Recipes",  "item_name": "Weeknight Dinners",     "data_type": "text", "data": "Stir fry, sheet-pan chicken, tacos." },
+  { "collection_name": "Recipes",  "item_name": "Bakes & Desserts",      "data_type": "text", "data": "Banana bread, brownies, crumble." },
+
+  { "collection_name": "Travel",   "item_name": "Italy 2026",            "data_type": "text", "data": "Rome–Florence–Venice; 10 days." },
+  { "collection_name": "Travel",   "item_name": "Packing List",          "data_type": "text", "data": "Passport, adaptor, meds, camera, Kindle." }
+]
