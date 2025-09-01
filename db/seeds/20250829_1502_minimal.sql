@@ -12,7 +12,7 @@ WHERE c.collection_name = 'Getting Started'
 ON CONFLICT DO NOTHING;
 
 -- Add a text data entry for that item
-INSERT INTO item_data (item_id, data_type, data)
+INSERT INTO item_data (item_id, data_type, data_body)
 SELECT i.id, 'text', 'Hello from your new schema!'
 FROM items i
 JOIN collections c ON c.id = i.collection_id
