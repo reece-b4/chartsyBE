@@ -1,21 +1,21 @@
 [
-  { "item_id": 1,            "data_type": "text", "data": "Hello from your new schema!" },
+  { "item_id": 1,            "data_type": "text", "data_body": "Hello from your new schema!" },
 
-  { "item_id": 2,        "data_type": "text", "data": "Q4 goals: CI/CD, UX polish, onboarding revamp." },
-  { "item_id": "3",       "data_type": "text", "data": "Backend dev, QA engineer, PM intern." },
+  { "item_id": 2,        "data_type": "text", "data_body": "Q4 goals: CI/CD, UX polish, onboarding revamp." },
+  { "item_id": "3",       "data_type": "text", "data_body": "Backend dev, QA engineer, PM intern." },
 
-  { "item_id": 4,             "data_type": "text", "data": "Milk, eggs, coffee, spinach, bananas." },
-  { "item_id": 5,         "data_type": "text", "data": "Clean Code; DDIA; Refactoring UI; Designing APIs." },
+  { "item_id": 4,             "data_type": "text", "data_body": "Milk, eggs, coffee, spinach, bananas." },
+  { "item_id": 5,         "data_type": "text", "data_body": "Clean Code; DDIA; Refactoring UI; Designing APIs." },
 
-  { "item_id": 6,           "data_type": "text", "data": "Push/Pull/Legs split; 3x/week." },
-  { "item_id": 7,    "data_type": "text", "data": "Target: -3kg in 8 weeks." },
+  { "item_id": 6,           "data_type": "text", "data_body": "Push/Pull/Legs split; 3x/week." },
+  { "item_id": 7,    "data_type": "text", "data_body": "Target: -3kg in 8 weeks." },
 
-  { "item_id": 8,        "data_type": "text", "data": "Limit eating out to £120/mo." },
-  { "item_id": 9, "data_type": "text", "data": "MSFT, NVDA, AAPL, AMD." },
+  { "item_id": 8,        "data_type": "text", "data_body": "Limit eating out to £120/mo." },
+  { "item_id": 9, "data_type": "text", "data_body": "MSFT, NVDA, AAPL, AMD." },
 
-  { "item_id": 10,     "data_type": "text", "data": "Stir fry, sheet-pan chicken, tacos." },
-  { "item_id": 11,      "data_type": "text", "data": "Banana bread, brownies, crumble." },
+  { "item_id": 10,     "data_type": "text", "data_body": "Stir fry, sheet-pan chicken, tacos." },
+  { "item_id": 11,      "data_type": "text", "data_body": "Banana bread, brownies, crumble." },
 
-  { "item_id": 12,            "data_type": "text", "data": "Rome–Florence–Venice; 10 days." },
-  { "item_id": 13,          "data_type": "text", "data": "Passport, adaptor, meds, camera, Kindle." }
+  { "item_id": 12,            "data_type": "text", "data_body": "Rome–Florence–Venice; 10 days." },
+  { "item_id": 13,          "data_type": "text", "data_body": "Passport, adaptor, meds, camera, Kindle." }
 ]
