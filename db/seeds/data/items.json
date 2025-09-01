@@ -1,15 +1,15 @@
 [
-  { "collection_id": 1, "item_name": "First item",            "icon": "📝" },
-  { "collection_id": 2,            "item_name": "Quarterly Plan",        "icon": "🗒️" },
-  { "collection_id": 2,            "item_name": "Hiring Pipeline",       "icon": "👥" },
-  { "collection_id": 3,        "item_name": "Groceries",             "icon": "🛒" },
-  { "collection_id": 3,        "item_name": "Books to Read",         "icon": "📚" },
-  { "collection_id": 4,         "item_name": "Workout Log",           "icon": "📈" },
-  { "collection_id": 4,         "item_name": "Bodyweight Tracker",    "icon": "⚖️" },
-  { "collection_id":5,         "item_name": "Monthly Budget",        "icon": "📊" },
-  { "collection_id": 5,         "item_name": "Investments Watchlist", "icon": "👀" },
-  { "collection_id": 6,         "item_name": "Weeknight Dinners",     "icon": "🍝" },
-  { "collection_id": 6,         "item_name": "Bakes & Desserts",      "icon": "🧁" },
-  { "collection_id": 7,          "item_name": "Italy 2026",            "icon": "🇮🇹" },
-  { "collection_id": 7,          "item_name": "Packing List",          "icon": "🧳" }
+  {"id": 1, "collection_id": 1, "item_name": "First item",            "icon": "📝" },
+  {"id": 2, "collection_id": 2,            "item_name": "Quarterly Plan",        "icon": "🗒️" },
+  {"id": 3, "collection_id": 2,            "item_name": "Hiring Pipeline",       "icon": "👥" },
+  {"id": 4, "collection_id": 3,        "item_name": "Groceries",             "icon": "🛒" },
+  {"id": 5, "collection_id": 3,        "item_name": "Books to Read",         "icon": "📚" },
+  {"id": 6, "collection_id": 4,         "item_name": "Workout Log",           "icon": "📈" },
+  {"id": 7, "collection_id": 4,         "item_name": "Bodyweight Tracker",    "icon": "⚖️" },
+  {"id": 8, "collection_id":5,         "item_name": "Monthly Budget",        "icon": "📊" },
+  {"id": 9, "collection_id": 5,         "item_name": "Investments Watchlist", "icon": "👀" },
+  {"id": 10, "collection_id": 6,         "item_name": "Weeknight Dinners",     "icon": "🍝" },
+  {"id": 11, "collection_id": 6,         "item_name": "Bakes & Desserts",      "icon": "🧁" },
+  {"id": 12, "collection_id": 7,          "item_name": "Italy 2026",            "icon": "🇮🇹" },
+  {"id": 13, "collection_id": 7,          "item_name": "Packing List",          "icon": "🧳" }
 ]
