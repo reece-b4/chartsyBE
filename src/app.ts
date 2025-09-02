@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { notAPath } from "@/errorhandling/index";
 import { customErrors, sqlErrors, serverErrors } from "@/errorhandling/index";
-import { getAllTasks, getTaskById, postTask } from "@/controllers/tasks.controller";
+import { getAllCollections, getCollectionById, postCollection } from "@/controllers/collections.controller";
 
 const allowlist = [
   'http://localhost:5173',
@@ -26,9 +26,9 @@ app.get("/api", (_req, res) => {
   res.status(200).json({ msg: "get request received, 200 OK" });
 });
 
-app.get("/api/task/:id", getTaskById);
-app.get("/api/tasks", getAllTasks);
-app.post("/api/task", postTask);
+app.get("/api/collection/:id", getCollectionById);
+app.get("/api/collections", getAllCollections);
+app.post("/api/collection", postCollection);
 
 // must be after routes as middleware executes in defined order
 app.all("/api/*", notAPath);

@@ -14,13 +14,12 @@
     "build": "npm run dist:clean && tsc -p tsconfig.build.json",
     "db:new-file:schema": "func() { touch db/schema/$(date +\"%Y%m%d_%H%M\")_$1.sql } && echo \"New migration created: $1\"; }; func",
     "db:new-file:seed": "func() { touch db/seeds/$(date +\"%Y%m%d_%H%M\")_$1.sql } && echo \"New seed created: $1\"; }; func",
-    "db:resetDatabase:local": "psql -v ON_ERROR_STOP=1 -d postgres -f db/scripts/reset_local.sql",
+    "db:resetDatabase:local": "psql -v ON_ERROR_STOP=1 -d postgres -f db/scripts/reset_local.sql && npm run db:seedJSON:local",
     "db:insert:min": "psql -v ON_ERROR_STOP=1 -d chartsydb -f db/seeds/20250829_1502_minimal.sql",
     "db:wipe:data:all": "bash -c 'read -p \"⚠️  This will DELETE ALL DATA in local chartsydb. Type yes to continue: \" ans && [ \"$ans\" = \"yes\" ] && psql -v ON_ERROR_STOP=1 -d chartsydb -f db/seeds/20250829_1557_truncate_all.sql || echo \"❌ Cancelled\"'",
     "db:reset:data": "npm run db:wipe:data:all && npm run db:seedJSON:local",
     "db:delete:local": "psql -f db/deleteDB.sql",
     "db:seedJSON:local": "NODE_ENV=development ts-node db/seeds/seedDBJSON.ts",
-
 
 
 
@@ -49,7 +48,7 @@
     "@types/node": "^22.14.1",
     "@types/pg": "^8.11.13",
     "@types/supertest": "^6.0.3",
-    "chartsy-types": "^2.0.5",
+    "chartsy-types": "^2.6.1",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9.26.0",
     "nodemon": "^3.1.9",
