@@ -33,10 +33,11 @@ export const runSeed = async (collections: CollectionInput[], items: ItemInput[]
 const insertCollections = async (client: PoolClient, collections: CollectionInput[]) => {
   for (const collection of collections) {
     try {
+      // overriding system value allows us to insert specific ids for seeding
       await client.query(
-        `INSERT INTO collections (id, collection_name, icon)
-         VALUES ($1, $2, $3);`,
-        [collection.id, collection.collection_name, collection.icon]
+        `INSERT INTO collections (collection_name, icon) OVERRIDING SYSTEM VALUE
+         VALUES ($1, $2);`,
+        [collection.collection_name, collection.icon]
       );
     } catch (err: any) {
       console.error("Error seeding collection. Reason:", err);
@@ -49,9 +50,9 @@ const insertItems = async (client: PoolClient, items: ItemInput[]) => {
   for (const item of items) {
     try {
       await client.query(
-        `INSERT INTO items (id, collection_id, item_name, icon)
-         VALUES ($1, $2, $3, $4);`,
-        [item.id, item.collection_id, item.item_name, item.icon]
+        `INSERT INTO items (collection_id, item_name, icon) OVERRIDING SYSTEM VALUE
+         VALUES ($1, $2, $3);`,
+        [item.collection_id, item.item_name, item.icon]
       );
     } catch (err: any) {
       console.error("Error seeding item. Reason:", err);
@@ -68,9 +69,9 @@ const insertItemData = async (client: PoolClient, itemData: SingleItemDataInput[
         continue;
       }
       await client.query(
-        `INSERT INTO item_data (id, item_id, data_type, data_body)
-         VALUES ($1, $2, $3, $4);`,
-        [data.id, data.item_id, data.data_type as ItemDataType, data.data_body]
+        `INSERT INTO item_data (item_id, data_type, data_body) OVERRIDING SYSTEM VALUE
+         VALUES ($1, $2, $3);`,
+        [data.item_id, data.data_type as ItemDataType, data.data_body]
       );
     } catch (err: any) {
       console.error("Error seeding item data. Reason:", err);
