@@ -6,13 +6,20 @@ import {
   getAllCollections,
   getCollectionById,
   postCollection,
+  patchCollectionById,
+  deleteCollectionById,
+  putCollectionById
 } from "@/controllers/collections.controller";
 import {
   getItems,
   getItemById,
   postItemByCollectionId,
+  patchItemById,
+  deleteItemById
 } from "@/controllers/items.controller";
-import { getItemData, getItemDataById, postItemDataByItemId } from "@/controllers/itemData.controller";
+import { getItemData, 
+  getItemDataById, postItemDataByItemId, patchItemDataById,
+deleteItemDataById } from "@/controllers/itemData.controller";
 
 const allowlist = [
   "http://localhost:5173",
@@ -29,26 +36,37 @@ app.use(
     credentials: true,
   }),
 );
-// Ensure preflight works for every route
+// TODO: look into preflight: Ensure preflight works for every route
 app.options("*", cors());
 app.use(express.json());
 
-// src/app.ts (near other routes)
 app.get("/api", (_req, res) => {
   res.status(200).json({ msg: "get request received, 200 OK" });
 });
 
+// collection routes
 app.get("/api/collections", getAllCollections);
 app.get("/api/collection/:id", getCollectionById);
 app.post("/api/collection", postCollection);
+app.patch("/api/collection/:id", patchCollectionById);
+app.delete("/api/collection/:id", deleteCollectionById);
+app.put("/api/collection/:id", putCollectionById);
 
+// item routes
+// getItemsByCollectionId covered in getItems
 app.get("/api/items", getItems);
 app.get("/api/item/:id", getItemById);
 app.post("/api/item", postItemByCollectionId);
+app.patch("/api/item/:id", patchItemById);
+app.delete("/api/item/:id", deleteItemById);
 
+// item_data routes
+// getItemDataByItemId covered in getItemData
 app.get("/api/item_data", getItemData);
-app.get("/api/item_data/:item_id",  getItemDataById);
+app.get("/api/item_data/:id",  getItemDataById);
 app.post("/api/item_data", postItemDataByItemId);
+app.patch("/api/item_data/:id", patchItemDataById);
+app.delete("/api/item_data/:id", deleteItemDataById);
 
 // must be after routes as middleware executes in defined order
 app.all("/api/*", notAPath);
