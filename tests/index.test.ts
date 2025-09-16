@@ -12,11 +12,11 @@ import {
   // Collection,
   Collections,
   ItemInput,
-  Item,
-  //  Items,
+  // Item,
+  Items,
   SingleItemDataInput,
-  SingleItemData,
-  //  ItemDataArray,
+  // SingleItemData,
+  ItemDataArray,
   //  ItemDataType
 } from "chartsy-types";
 import collectionsJSON from "../db/seeds/data/collections.json";
@@ -40,10 +40,8 @@ afterAll(async () => {
 
 describe("GET /api/not-a-valid-path", () => {
   test("404 - given non existent path responds with message path not found <GLOBAL>", async () => {
-    const response = await request(app)
-      .get("/api/not-a-path")
-      .expect(404)
-        expect(response.body.msg).toBe("path not found");
+    const response = await request(app).get("/api/not-a-path").expect(404);
+    expect(response.body.msg).toBe("path not found");
   });
 });
 
@@ -72,9 +70,9 @@ describe("/api", () => {
       const response = await request(app).get("/api/items").expect(200);
       expect(response.body.items).toBeInstanceOf(Array);
       expect(response.body.items.length).toBe(13);
-      response.body.items.forEach((item: Item) => {
+      for (const item of response.body.items as Items) {
         validateItem(item);
-      });
+      }
     });
     // get item by id
     test("status - 200 - given id, returns item with said id", async () => {
@@ -90,19 +88,20 @@ describe("/api", () => {
         .expect(200);
       expect(response.body.items).toBeInstanceOf(Array);
       expect(response.body.items.length).toBe(2);
-      response.body.items.forEach((item: Item) => {
+      for (const item of response.body.items as Items) {
         validateItem(item);
         expect(item.collection_id).toBe(2);
-      });
+      }
     });
     // get all item_data
     test("status - 200 - returns an array of all item_data", async () => {
       const response = await request(app).get("/api/item_data").expect(200);
       expect(response.body.item_data).toBeInstanceOf(Array);
       expect(response.body.item_data.length).toBe(14);
-      response.body.item_data.forEach((itemData: SingleItemData) => {
+      for (const itemData of response.body.item_data as ItemDataArray) {
+        response.body.item_data.forEaK;
         validateItemData(itemData);
-      });
+      }
     });
 
     // get item_data by id
@@ -123,10 +122,10 @@ describe("/api", () => {
         .expect(200);
       expect(response.body.item_data).toBeInstanceOf(Array);
       expect(response.body.item_data.length).toBe(2);
-      response.body.item_data.forEach((itemData: SingleItemData) => {
+      for (const itemData of response.body.item_data as ItemDataArray) {
         validateItemData(itemData);
         expect(itemData.item_id).toBe(2);
-      });
+      }
     });
   });
 });
