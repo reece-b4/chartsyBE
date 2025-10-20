@@ -69,7 +69,6 @@ export const replaceCollectionById = async (
   propertyNames: any[],
   propertyValues: any[],
 ) => {
-
   const setClauses = propertyNames.map((prop, i) => `${prop} = $${i + 2}`);
   const query = `UPDATE collections 
      SET ${setClauses.join(", ")}

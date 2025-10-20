@@ -53,8 +53,14 @@ describe("/api", () => {
     });
     test("status - 200 - returns an array of collections", async () => {
       const response = await request(app).get("/api/collections").expect(200);
+      // Why does this not ensure what is being assigned to collections const fits the type of Collections?
+      // response.body.collections is "any" so it doesn't check it further down the chain?
+      // TODO: ensure types correctly - validate with zod? look into zod
+
       expect(response.body.collections).toBeInstanceOf(Array);
       expect(response.body.collections.length).toBeGreaterThan(0);
+      // this is casting as Collections which does not ensure it suits the type - hence why created_as was passing as a string even though it (incorrectly) expects a Date
+      // Supertest (and fetch, axios, etc.) give any in response.body
       for (const collection of response.body.collections as Collections) {
         validateCollection(collection);
       }
