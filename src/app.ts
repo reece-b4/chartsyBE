@@ -20,7 +20,7 @@ import {
 import { getItemData, 
   getItemDataById, postItemDataByItemId, patchItemDataById,
 deleteItemDataById } from "@/controllers/itemData.controller";
-// test comment
+// test comment 2
 
 const allowlist = [
   "http://localhost:5173",
