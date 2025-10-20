@@ -15,10 +15,10 @@ export const getAllCollections = async (
 ) => {
   try {
     const collections = await fetchAllCollections();
-    res.status(200).json({ collections });
+    return res.status(200).json({ collections });
   } catch (error) {
     console.error("Error in /api/collections:", error);
-    next(error);
+    return next(error);
   }
 };
 
@@ -31,12 +31,12 @@ export const getCollectionById = async (
   try {
     const result = await fetchCollectionById(id);
     if (result === null) {
-      res.status(404).json({ msg: "Collection not found" });
+      return res.status(404).json({ msg: "Collection not found" });
     }
-    res.status(200).json({ collection: result });
+    return res.status(200).json({ collection: result });
   } catch (error) {
     console.error("Error in /api/collection:id", error);
-    next(error);
+    return next(error);
   }
 };
 
@@ -47,7 +47,7 @@ export const postCollection = async (
 ) => {
   try {
     const collection = await addCollection(req.body);
-    res.status(201).json({ collection });
+    return res.status(201).json({ collection });
   } catch (error) {
     console.error("Error in post /api/collection:", error);
     next(error);
@@ -80,7 +80,7 @@ export const patchCollectionById = async (
       propertyNames,
       propertyValues,
     );
-    res.status(200).json({ collection });
+    return res.status(200).json({ collection });
   } catch (error) {
     console.error("Error in patch /api/collection/:id:", error);
     next(error);
@@ -96,9 +96,9 @@ export const deleteCollectionById = async (
   try {
     const collection = await removeCollectionById(id);
     if (!collection) {
-      res.status(404).json({ msg: "Collection not found" });
+      return res.status(404).json({ msg: "Collection not found" });
     } else {
-      res.sendStatus(204);
+      return res.sendStatus(204);
     }
   } catch (error) {
     console.error("Error in delete /api/collection/:id:", error);
