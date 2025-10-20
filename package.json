@@ -15,16 +15,13 @@
     "db:new-file:schema": "func() { touch db/schema/$(date +\"%Y%m%d_%H%M\")_$1.sql } && echo \"New migration created: $1\"; }; func",
     "db:new-file:seed": "func() { touch db/seeds/$(date +\"%Y%m%d_%H%M\")_$1.sql } && echo \"New seed created: $1\"; }; func",
     "db:resetDatabase:local": "psql -v ON_ERROR_STOP=1 -d postgres -f db/scripts/reset_local.sql && npm run db:seedJSON:local",
-    "db:insert:min": "psql -v ON_ERROR_STOP=1 -d chartsydb -f db/seeds/20250829_1502_minimal.sql",
+    "db:insert:minimalData": "psql -v ON_ERROR_STOP=1 -d chartsydb -f db/seeds/20250829_1502_minimal.sql",
     "db:wipe:data:all": "bash -c 'read -p \"⚠️  This will DELETE ALL DATA in local chartsydb. Type yes to continue: \" ans && [ \"$ans\" = \"yes\" ] && psql -v ON_ERROR_STOP=1 -d chartsydb -f db/seeds/20250829_1557_truncate_all.sql || echo \"❌ Cancelled\"'",
     "db:reset:data": "npm run db:wipe:data:all && npm run db:seedJSON:local",
     "db:delete:local": "psql -f db/deleteDB.sql",
     "db:seedJSON:local": "NODE_ENV=development ts-node db/seeds/seedDBJSON.ts",
-
-
-
-    "db:create:neon:prod": "",
-    "db:seed:neon:prod": "NODE_ENV=neon ts-node db/seed/seedDB.ts",
+    "db:resetSchema:neon:prod": "dotenv -e .env.neon -- bash -lc 'psql -v ON_ERROR_STOP=1 \"$DATABASE_URL\" -f db/scripts/resetSchema_neon.sql && ts-node db/seeds/seedDBJSON.ts'",
+    "db:seed:neon:prod": "dotenv -e .env.neon -- bash -lc 'NODE_ENV=neon ts-node db/seeds/seedDBJSON.ts'",
     "test": "jest",
     "empty-bucket": "aws s3 rm s3://serverless-framework-deployments-eu-west-2-4503d36b-608c --recursive",
     "build:serverlessDist": "dotenv -e .env.production -- serverless package",
