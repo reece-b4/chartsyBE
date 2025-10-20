@@ -23,7 +23,7 @@ export const getItems = async (
   }
   try {
     const items = await fetchItems(collectionId);
-    res.status(200).json({ items });
+    return res.status(200).json({ items });
   } catch (error) {
     console.error("Error in /api/items:", error);
     next(error);
@@ -38,10 +38,10 @@ export const getItemById = async (
   const id = req.params.id as string;
   try {
     const item = await fetchItemById(id);
-        if (item === null) {
-      res.status(404).json({ msg: "Item not found" });
+    if (item === null) {
+      return res.status(404).json({ msg: "Item not found" });
     }
-    res.status(200).json({ item });
+    return res.status(200).json({ item });
   } catch (error) {
     console.error("Error in /api/item:id", error);
     next(error);
@@ -58,7 +58,7 @@ export const postItemByCollectionId = async (
       req.body,
       req.query.collection_id as string,
     );
-    res.status(201).json({ item });
+    return res.status(201).json({ item });
   } catch (error) {
     console.error("Error in post /api/item:", error);
     next(error);
@@ -87,7 +87,7 @@ export const patchItemById = async (
     }
 
     const item = await updateItemById(id, propertyNames, propertyValues);
-    res.status(200).json({ item });
+    return res.status(200).json({ item });
   } catch (error) {
     console.error("Error in patch /api/item/:id:", error);
     next(error);
@@ -103,9 +103,9 @@ export const deleteItemById = async (
   try {
     const item = await removeItemById(id);
     if (!item) {
-      res.status(404).json({ msg: "Item not found" });
+      return res.status(404).json({ msg: "Item not found" });
     } else {
-      res.sendStatus(204);
+      return res.sendStatus(204);
     }
   } catch (error) {
     console.error("Error in delete /api/item/:id:", error);

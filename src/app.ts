@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { notAPath } from "@/errorhandling/index";
+import { notFound } from "@/errorhandling/index";
 import { customErrors, sqlErrors, serverErrors } from "@/errorhandling/index";
 import {
   getAllCollections,
@@ -41,7 +41,7 @@ app.options("*", cors());
 app.use(express.json());
 
 app.get("/api", (_req, res) => {
-  res.status(200).json({ msg: "get request received, 200 OK" });
+  return res.status(200).json({ msg: "get request received, 200 OK" });
 });
 
 // collection routes
@@ -69,7 +69,7 @@ app.patch("/api/item_data/:id", patchItemDataById);
 app.delete("/api/item_data/:id", deleteItemDataById);
 
 // must be after routes as middleware executes in defined order
-app.all("/api/*", notAPath);
+app.all("/api/*", notFound);
 app.use(customErrors);
 app.use(sqlErrors);
 app.use(serverErrors);
@@ -87,6 +87,6 @@ app.use(
       : "";
     res.set("Access-Control-Allow-Origin", origin);
     res.set("Access-Control-Allow-Credentials", "true");
-    res.status(err.status || 500).json({ error: err.message || "Internal" });
+    return res.status(err.status || 500).json({ error: err.message || "Internal" });
   },
 );

@@ -18,7 +18,7 @@ export const getItemData = async (
     const item_data = await fetchItemData(itemId);
     if (itemId) {
     }
-    res.status(200).json({ item_data });
+    return res.status(200).json({ item_data });
   } catch (error) {
     console.error("Error in /api/item_data:", error);
     next(error);
@@ -39,7 +39,7 @@ export const getItemDataById = async (
     if (item_data === null) {
       return res.status(404).json({ msg: "Item data not found" });
     }
-    res.status(200).json({ item_data });
+    return res.status(200).json({ item_data });
   } catch (error) {
     console.error("Error in /api/item_data/:id", error);
     next(error);
@@ -53,7 +53,7 @@ export const postItemDataByItemId = async (
 ) => {
   try {
     const item_data = await addItemDataByItemId(req.body, req.query.item_id as string);
-    res.status(201).json({ item_data });
+    return res.status(201).json({ item_data });
   } catch (error) {
     console.error("Error in post /api/item_data:", error);
     next(error);
@@ -81,7 +81,7 @@ export const patchItemDataById = async (
       return res.status(400).json({ msg: "No updatable fields provided" });
     }
     const itemData = await updateItemDataById(id, propertyNames, propertyValues);
-    res.status(200).json({ item_data: itemData });
+    return res.status(200).json({ item_data: itemData });
   } catch (error) {
     console.error("Error in patch /api/item_data/:id", error);
     next(error);
@@ -97,7 +97,7 @@ export const deleteItemDataById = async (
   try {
     const itemData = await removeItemDataById(id);
     if (!itemData) {
-      res.status(404).json({ msg: "Item data not found" });
+      return res.status(404).json({ msg: "Item data not found" });
     } else {
       res.sendStatus(204);
     }
