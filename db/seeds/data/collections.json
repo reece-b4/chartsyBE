@@ -1,0 +1,9 @@
+[
+  {"id": 1, "collection_name": "Getting Started", "icon": "📁" },
+  {"id": 2,  "collection_name": "Work",            "icon": "🗂️" },
+  {"id": 3,  "collection_name": "Personal",        "icon": "🏠" },
+  {"id": 4,  "collection_name": "Fitness",         "icon": "🏋️" },
+  {"id": 5,  "collection_name": "Finance",         "icon": "💷" },
+  {"id": 6,  "collection_name": "Recipes",         "icon": "🍳" },
+  {"id": 7,  "collection_name": "Travel",          "icon": "🧭" }
+]

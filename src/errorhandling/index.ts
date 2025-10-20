@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "@/types";
+import { AppError } from "chartsy-types";
 
 export const notAPath = (_req: Request, res: Response) => {
   res.status(404).send({ msg: "path not found" });
