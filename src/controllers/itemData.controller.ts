@@ -54,7 +54,6 @@ export const postItemDataByItemId = async (
   try {
     const item_data = await addItemDataByItemId(req.body, req.query.item_id as string);
     res.status(201).json({ item_data });
-    res.status(201).json({ msg: "POST /api/item_data endpoint hit" });
   } catch (error) {
     console.error("Error in post /api/item_data:", error);
     next(error);
