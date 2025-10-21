@@ -27,13 +27,20 @@ const collections = collectionsJSON as CollectionInput[];
 const items = itemsJSON as ItemInput[];
 const itemData = itemDataJSON as SingleItemDataInput[];
 
-afterEach(async () => {
-  if (process.env.NODE_ENV !== "neon:ephemeral") {
-    return await runSeed(collections, items, itemData);
-  }
-});
+let newCollectionId: number | null = null;
+let newItemId: number | null = null;
+
+// tests should not need to be reseeded as will break on deployment where tests are run on ephemeral DB. Will keep local reseeding here
+// afterEach(async () => {
+//   if (process.env.NODE_ENV === "test") {
+//     // return await runSeed(collections, items, itemData);
+//   }
+// });
 
 afterAll(async () => {
+  if (process.env.NODE_ENV === "test") {
+    return await runSeed(collections, items, itemData);
+  }
   console.log("Closing database connection");
   return db.end();
 });
@@ -45,310 +52,708 @@ describe("GET /api/not-a-valid-path", () => {
   });
 });
 
-describe("/api", () => {
-  describe("GET", () => {
-    test("Status: 200 - Returns message - get request received, 200 OK", async () => {
-      const response = await request(app).get("/api").expect(200);
-      expect(response.body.msg).toEqual("get request received, 200 OK");
+// This block is redundant if dynamic block is done correctly. Leaving in for now as a sanity check during development - extract into own file & refactor if kept long term as is not DRY using both blocks
+if (process.env.NODE_ENV === "test") {
+  // local testing only with hardcoded known data
+  describe("hardcoded content (static) tests)", () => {
+    afterEach(async () => {
+      return await runSeed(collections, items, itemData);
     });
-    test("status - 200 - returns an array of collections", async () => {
-      const response = await request(app).get("/api/collections").expect(200);
-      // Why does this not ensure what is being assigned to collections const fits the type of Collections?
-      // response.body.collections is "any" so it doesn't check it further down the chain?
-      // TODO: ensure types correctly - validate with zod? look into zod
+    describe("/api", () => {
+      describe("GET", () => {
+        test("Status: 200 - Returns message - get request received, 200 OK", async () => {
+          const response = await request(app).get("/api").expect(200);
+          expect(response.body.msg).toEqual("get request received, 200 OK");
+        });
+        test("status - 200 - returns an array of collections", async () => {
+          const response = await request(app)
+            .get("/api/collections")
+            .expect(200);
+          // Why does this not ensure what is being assigned to collections const fits the type of Collections?
+          // response.body.collections is "any" so it doesn't check it further down the chain?
+          // TODO: ensure types correctly - validate with zod? look into zod
 
-      expect(response.body.collections).toBeInstanceOf(Array);
-      expect(response.body.collections.length).toBeGreaterThan(0);
-      // this is casting as Collections which does not ensure it suits the type - hence why created_as was passing as a string even though it (incorrectly) expects a Date
-      // Supertest (and fetch, axios, etc.) give any in response.body
-      for (const collection of response.body.collections as Collections) {
-        validateCollection(collection);
-      }
+          expect(response.body.collections).toBeInstanceOf(Array);
+          expect(response.body.collections.length).toBeGreaterThan(0);
+          // this is casting as Collections which does not ensure it suits the type - hence why created_as was passing as a string even though it (incorrectly) expects a Date
+          // Supertest (and fetch, axios, etc.) give any in response.body
+          for (const collection of response.body.collections as Collections) {
+            validateCollection(collection);
+          }
+        });
+        test("status - 200 - given id, returns collection with said id", async () => {
+          const response = await request(app)
+            .get("/api/collection/1")
+            .expect(200);
+
+          validateCollection(response.body.collection);
+          expect(response.body.collection.id).toBe(1);
+          expect(response.body.collection.collection_name).toBe(
+            "Getting Started",
+          );
+        });
+        test("status - 200 - returns an array of all items", async () => {
+          const response = await request(app).get("/api/items").expect(200);
+          expect(response.body.items).toBeInstanceOf(Array);
+          expect(response.body.items.length).toBe(13);
+          for (const item of response.body.items as Items) {
+            validateItem(item);
+          }
+        });
+        // get item by id
+        test("status - 200 - given id, returns item with said id", async () => {
+          const response = await request(app).get("/api/item/1").expect(200);
+          validateItem(response.body.item);
+          expect(response.body.item.id).toBe(1);
+          expect(response.body.item.item_name).toBe("First item");
+        });
+        // get items by collection id
+        test("status - 200 - given collection id, returns items with said collection id", async () => {
+          const response = await request(app)
+            .get("/api/items?collection_id=2")
+            .expect(200);
+          expect(response.body.items).toBeInstanceOf(Array);
+          expect(response.body.items.length).toBe(2);
+          for (const item of response.body.items as Items) {
+            validateItem(item);
+            expect(item.collection_id).toBe(2);
+          }
+        });
+        // get all item_data
+        test("status - 200 - returns an array of all item_data", async () => {
+          const response = await request(app).get("/api/item_data").expect(200);
+          expect(response.body.item_data).toBeInstanceOf(Array);
+          expect(response.body.item_data.length).toBe(14);
+          for (const itemData of response.body.item_data as ItemDataArray) {
+            validateItemData(itemData);
+          }
+        });
+
+        // get item_data by id
+        test("status - 200 - given id, returns item_data with said id", async () => {
+          const response = await request(app)
+            .get("/api/item_data/1")
+            .expect(200);
+          validateItemData(response.body.item_data);
+          expect(response.body.item_data.id).toBe(1);
+          expect(response.body.item_data.item_id).toBe(1);
+          expect(response.body.item_data.data_body).toBe(
+            "Hello from your new schema!",
+          );
+        });
+
+        // get item_data_array by item id
+        test("status - 200 - given item id, returns item_data array with said item id", async () => {
+          const response = await request(app)
+            .get("/api/item_data?item_id=2")
+            .expect(200);
+          expect(response.body.item_data).toBeInstanceOf(Array);
+          expect(response.body.item_data.length).toBe(2);
+          for (const itemData of response.body.item_data as ItemDataArray) {
+            validateItemData(itemData);
+            expect(itemData.item_id).toBe(2);
+          }
+        });
+      });
     });
-    test("status - 200 - given id, returns collection with said id", async () => {
-      const response = await request(app).get("/api/collection/1").expect(200);
 
-      validateCollection(response.body.collection);
-      expect(response.body.collection.id).toBe(1);
-      expect(response.body.collection.collection_name).toBe("Getting Started");
+    // post collection
+    describe("POST /api/collection", () => {
+      test("status - 201 - returns the newly created collection", async () => {
+        const newCollection = {
+          collection_name: "Posted collection",
+          icon: "📝",
+        };
+
+        const response = await request(app)
+          .post("/api/collection")
+          .send(newCollection)
+          .expect(201);
+        validateCollection(response.body.collection);
+        expect(response.body.collection.collection_name).toBe(
+          newCollection.collection_name,
+        );
+        expect(response.body.collection.icon).toBe(newCollection.icon);
+        expect(response.body.collection.id).toBe(8);
+      });
+      // post item by collection id
+      test("POST /api/item/:collection_id - status 201 - adds item with correct collection id and returns the newly created item", async () => {
+        const newItem = {
+          item_name: "Posted item",
+          icon: "📝",
+        };
+
+        const response = await request(app)
+          .post("/api/item?collection_id=1")
+          .send(newItem)
+          .expect(201);
+        validateItem(response.body.item);
+        expect(response.body.item.collection_id).toBe(1);
+        expect(response.body.item.item_name).toBe(newItem.item_name);
+        expect(response.body.item.icon).toBe(newItem.icon);
+      });
+
+      // post item_data by item id
+      test("POST /api/item_data/:item_id - status 201 - adds item_data with correct item id and returns the newly created item_data", async () => {
+        const newItemData = {
+          data_type: "text",
+          data_body: "Posted item data",
+        };
+        const response = await request(app)
+          .post("/api/item_data?item_id=1")
+          .send(newItemData)
+          .expect(201);
+        validateItemData(response.body.item_data);
+        expect(response.body.item_data.item_id).toBe(1);
+        expect(response.body.item_data.data_type).toBe(newItemData.data_type);
+        expect(response.body.item_data.data_body).toBe(newItemData.data_body);
+        expect(response.body.item_data.id).toBe(15);
+      });
     });
-    test("status - 200 - returns an array of all items", async () => {
-      const response = await request(app).get("/api/items").expect(200);
-      expect(response.body.items).toBeInstanceOf(Array);
-      expect(response.body.items.length).toBe(13);
-      for (const item of response.body.items as Items) {
-        validateItem(item);
-      }
+
+    describe("patch", () => {
+      // replace part of an entity - currently set up to allow patching of any combination of updatable fields using an allowlist
+      // patch collection by id
+      test("status: 200 - updates collection name and icon and returns updated collection", async () => {
+        const updatedCollection = {
+          collection_name: "Updated collection name",
+          icon: "🔄",
+        };
+        const response = await request(app)
+          .patch("/api/collection/1")
+          .send(updatedCollection)
+          .expect(200);
+        validateCollection(response.body.collection);
+        expect(response.body.collection.id).toBe(1);
+        expect(response.body.collection.collection_name).toBe(
+          updatedCollection.collection_name,
+        );
+        expect(response.body.collection.icon).toBe(updatedCollection.icon);
+      });
+
+      test("status: 200 - updates collection name and returns updated collection", async () => {
+        const updatedCollection = {
+          collection_name: "Updated collection name",
+        };
+        const response = await request(app)
+          .patch("/api/collection/1")
+          .send(updatedCollection)
+          .expect(200);
+        validateCollection(response.body.collection);
+        expect(response.body.collection.id).toBe(1);
+        expect(response.body.collection.collection_name).toBe(
+          updatedCollection.collection_name,
+        );
+        expect(response.body.collection.icon).toBe("📁");
+      });
+
+      test("status: 200 - updates collection icon and returns updated collection", async () => {
+        const updatedCollection = {
+          icon: "🧐",
+        };
+        const response = await request(app)
+          .patch("/api/collection/1")
+          .send(updatedCollection)
+          .expect(200);
+        validateCollection(response.body.collection);
+        expect(response.body.collection.id).toBe(1);
+        expect(response.body.collection.collection_name).toBe(
+          "Getting Started",
+        );
+        expect(response.body.collection.icon).toBe(updatedCollection.icon);
+      });
+
+      // patch item by id
+      test("status: 200 - updates item name and icon and returns updated item", async () => {
+        const updatedItem = {
+          item_name: "Updated item name",
+          icon: "🔄",
+        };
+        const response = await request(app)
+          .patch("/api/item/1")
+          .send(updatedItem)
+          .expect(200);
+        validateItem(response.body.item);
+        expect(response.body.item.id).toBe(1);
+        expect(response.body.item.item_name).toBe(updatedItem.item_name);
+        expect(response.body.item.icon).toBe(updatedItem.icon);
+        expect(response.body.item.collection_id).toBe(1);
+      });
+
+      test("status: 200 - updates item.collection_id updated item", async () => {
+        const updatedItem = {
+          collection_id: 2,
+        };
+        const response = await request(app)
+          .patch("/api/item/1")
+          .send(updatedItem)
+          .expect(200);
+        validateItem(response.body.item);
+        expect(response.body.item.id).toBe(1);
+        expect(response.body.item.item_name).toBe("First item");
+        expect(response.body.item.icon).toBe("📝");
+        expect(response.body.item.collection_id).toBe(2);
+      });
+
+      // patch item data by id
+      test("status: 200 - updates item_id, item_data data_type and data_body and returns updated item_data", async () => {
+        const updatedItemData = {
+          item_id: 2,
+          data_type: "image",
+          data_body: "Updated item data body",
+        };
+        const response = await request(app)
+          .patch("/api/item_data/1")
+          .send(updatedItemData)
+          .expect(200);
+        validateItemData(response.body.item_data);
+        expect(response.body.item_data.id).toBe(1);
+        expect(response.body.item_data.item_id).toBe(updatedItemData.item_id);
+        expect(response.body.item_data.data_type).toBe(
+          updatedItemData.data_type,
+        );
+        expect(response.body.item_data.data_body).toBe(
+          updatedItemData.data_body,
+        );
+      });
     });
-    // get item by id
-    test("status - 200 - given id, returns item with said id", async () => {
-      const response = await request(app).get("/api/item/1").expect(200);
-      validateItem(response.body.item);
-      expect(response.body.item.id).toBe(1);
-      expect(response.body.item.item_name).toBe("First item");
-    });
-    // get items by collection id
-    test("status - 200 - given collection id, returns items with said collection id", async () => {
-      const response = await request(app)
-        .get("/api/items?collection_id=2")
-        .expect(200);
-      expect(response.body.items).toBeInstanceOf(Array);
-      expect(response.body.items.length).toBe(2);
-      for (const item of response.body.items as Items) {
-        validateItem(item);
-        expect(item.collection_id).toBe(2);
-      }
-    });
-    // get all item_data
-    test("status - 200 - returns an array of all item_data", async () => {
-      const response = await request(app).get("/api/item_data").expect(200);
-      expect(response.body.item_data).toBeInstanceOf(Array);
-      expect(response.body.item_data.length).toBe(14);
-      for (const itemData of response.body.item_data as ItemDataArray) {
-        response.body.item_data.forEaK;
-        validateItemData(itemData);
-      }
-    });
 
-    // get item_data by id
-    test("status - 200 - given id, returns item_data with said id", async () => {
-      const response = await request(app).get("/api/item_data/1").expect(200);
-      validateItemData(response.body.item_data);
-      expect(response.body.item_data.id).toBe(1);
-      expect(response.body.item_data.item_id).toBe(1);
-      expect(response.body.item_data.data_body).toBe(
-        "Hello from your new schema!",
-      );
+    describe("delete", () => {
+      // delete collection by id
+      // this is still idempotent as idempotency is defined as the state of the server being the same after one request as it is after multiple identical requests not the request code itself
+      test("status: 204 - deletes collection by id and returns nothing", async () => {
+        const response = await request(app)
+          .delete("/api/collection/1")
+          .expect(204);
+        expect(response.body).toEqual({});
+        const getResponse = await request(app)
+          .get("/api/collection/1")
+          .expect(404);
+        expect(getResponse.body.msg).toBe("Collection not found");
+      });
+      // TODO: associated items and item_data should also be deleted via cascade
+      // TODO: need to test ids of deleted items/collections/item_data not reused or can we assume as is postgres behavior?
+
+      // delete item by id
+      test("status: 204 - deletes item by id and returns nothing", async () => {
+        const response = await request(app).delete("/api/item/1").expect(204);
+        expect(response.body).toEqual({});
+        const getResponse = await request(app).get("/api/item/1").expect(404);
+        expect(getResponse.body.msg).toBe("Item not found");
+      });
+      // delete item data by id
+      test("status: 204 - deletes item_data by id and returns nothing", async () => {
+        const response = await request(app)
+          .delete("/api/item_data/1")
+          .expect(204);
+        expect(response.body).toEqual({});
+        const getResponse = await request(app)
+          .get("/api/item_data/1")
+          .expect(404);
+        expect(getResponse.body.msg).toBe("Item data not found");
+      });
     });
 
-    // get item_data_array by item id
-    test("status - 200 - given item id, returns item_data array with said item id", async () => {
-      const response = await request(app)
-        .get("/api/item_data?item_id=2")
-        .expect(200);
-      expect(response.body.item_data).toBeInstanceOf(Array);
-      expect(response.body.item_data.length).toBe(2);
-      for (const itemData of response.body.item_data as ItemDataArray) {
-        validateItemData(itemData);
-        expect(itemData.item_id).toBe(2);
-      }
+    describe("PUT", () => {
+      // replace whole entity
+      // Will not allow creation on PUTS if id not found as is best practice however allowing creation on PUTS is more idempotent
+      // should not allow change of id or created at - immutable fields
+      //	200 OK — replaced an existing resource.
+      // 201 Created — created a new resource.
+      // 204 No Content — updated but don’t want to send a body.
+      // 404 Not Found — don’t allow creating on PUT and the resource doesn’t exist.
+      // 409 Conflict — state of the system prevents creating/updating (constraint).
+
+      // put collection by id
+      test("status: 200 - updates collection name and icon (all mutable fields) and returns updated collection", async () => {
+        const updatedCollection = {
+          collection_name: "Updated collection name with put",
+          icon: "🔄",
+        };
+        const response = await request(app)
+          .put("/api/collection/2")
+          .send(updatedCollection)
+          .expect(200);
+        validateCollection(response.body.collection);
+        expect(response.body.collection.id).toBe(2);
+        expect(response.body.collection.collection_name).toBe(
+          updatedCollection.collection_name,
+        );
+        expect(response.body.collection.icon).toBe(updatedCollection.icon);
+      });
     });
   });
-});
+}
 
-// given invalid collection object return correct error code and message
-// given no collection object return correct error code and message
-// all other possible error tests
+describe("non hardcoded content (dynamic) tests)", () => {
+  describe("/api", () => {
+    describe("GET", () => {
+      test("status - 200 - returns an array of collections", async () => {
+        const response = await request(app).get("/api/collections").expect(200);
 
-// post collection
-describe("POST /api/collection", () => {
-  test("status - 201 - returns the newly created collection", async () => {
-    const newCollection = {
-      collection_name: "Posted collection",
-      icon: "📝",
-    };
+        expect(response.body.collections).toBeInstanceOf(Array);
+        expect(response.body.collections.length).toBeGreaterThan(0);
+        for (const collection of response.body.collections as Collections) {
+          validateCollection(collection);
+        }
+      });
+      test("status - 200 - given id, returns collection with said id", async () => {
+        const testCollection = {
+          collection_name: "Test Collection",
+          icon: "👀",
+        };
+        const newCollection = await request(app)
+          .post("/api/collection")
+          .send(testCollection)
+          .expect(201);
+        const newId = newCollection.body.collection.id;
+        // set root scoped variable for use in other tests
+        newCollectionId = newId;
+        const newName = newCollection.body.collection.collection_name;
+        const newIcon = newCollection.body.collection.icon;
 
-    const response = await request(app)
-      .post("/api/collection")
-      .send(newCollection)
-      .expect(201);
-    validateCollection(response.body.collection);
-    expect(response.body.collection.collection_name).toBe(
-      newCollection.collection_name,
-    );
-    expect(response.body.collection.icon).toBe(newCollection.icon);
-    expect(response.body.collection.id).toBe(8);
-  });
-  // post item by collection id
-  test("POST /api/item/:collection_id - status 201 - adds item with correct collection id and returns the newly created item", async () => {
-    const newItem = {
-      item_name: "Posted item",
-      icon: "📝",
-    };
+        const response = await request(app)
+          .get(`/api/collection/${newId}`)
+          .expect(200);
 
-    const response = await request(app)
-      .post("/api/item?collection_id=1")
-      .send(newItem)
-      .expect(201);
-    validateItem(response.body.item);
-    expect(response.body.item.collection_id).toBe(1);
-    expect(response.body.item.item_name).toBe(newItem.item_name);
-    expect(response.body.item.icon).toBe(newItem.icon);
-  });
+        validateCollection(response.body.collection);
+        expect(response.body.collection.id).toBe(newId);
+        expect(response.body.collection.collection_name).toBe(newName);
+        expect(response.body.collection.icon).toBe(newIcon);
+      });
+      test("status - 200 - returns an array of all items", async () => {
+        const response = await request(app).get("/api/items").expect(200);
+        expect(response.body.items).toBeInstanceOf(Array);
+        expect(response.body.items.length).toBeGreaterThan(0);
+        for (const item of response.body.items as Items) {
+          validateItem(item);
+        }
+      });
+      // get item by id
+      test("status - 200 - given id, returns item with said id", async () => {
+        const testItem = {
+          item_name: "Test Item",
+          icon: "✍️",
+        };
+        if (newCollectionId === null) {
+          throw new Error("newCollectionId is null");
+        }
+        const newItem = await request(app)
+          .post(`/api/item?collection_id=${newCollectionId}`)
+          .send(testItem)
+          .expect(201);
+        const newId = newItem.body.item.id;
+        // set root scoped variable for use in other tests
+        newItemId = newId;
+        const newName = newItem.body.item.item_name;
+        const newIcon = newItem.body.item.icon;
+        const response = await request(app)
+          .get(`/api/item/${newId}`)
+          .expect(200);
+        validateItem(response.body.item);
+        expect(response.body.item.id).toBe(newId);
+        expect(response.body.item.item_name).toBe(newName);
+        expect(response.body.item.icon).toBe(newIcon);
+      });
+      // get items by collection id
+      test("status - 200 - given collection id, returns items with said collection id", async () => {
+        const response = await request(app)
+          .get(`/api/items?collection_id=2`)
+          .expect(200);
+        expect(response.body.items).toBeInstanceOf(Array);
+        // skipped if empty
+        for (const item of response.body.items as Items) {
+          validateItem(item);
+          expect(item.collection_id).toBe(2);
+        }
+      });
+      test("status - 200 - given collection id, returns items with said collection id", async () => {
+        const response = await request(app)
+          .get(`/api/items?collection_id=${newCollectionId}`)
+          .expect(200);
+        expect(response.body.items).toBeInstanceOf(Array);
+        expect(response.body.items.length).toBe(1);
+        // skipped if empty
+        for (const item of response.body.items as Items) {
+          validateItem(item);
+          expect(item.collection_id).toBe(newCollectionId);
+        }
+      });
+      // get all item_data
+      test("status - 200 - returns an array of all item_data", async () => {
+        const response = await request(app).get("/api/item_data").expect(200);
+        expect(response.body.item_data).toBeInstanceOf(Array);
+        expect(response.body.item_data.length).toBeGreaterThan(0);
+        for (const itemData of response.body.item_data as ItemDataArray) {
+          validateItemData(itemData);
+        }
+      });
+      // get item_data by id
+      test("status - 200 - given id, returns item_data with said id", async () => {
+        const response = await request(app).get("/api/item_data/1").expect(200);
+        validateItemData(response.body.item_data);
+        expect(response.body.item_data.id).toBe(1);
+        expect(response.body.item_data.item_id).toBe(1);
+        expect(response.body.item_data.data_body).toBe(
+          "Hello from your new schema!",
+        );
+      });
+      // get item_data_array by item id
+      test("status - 200 - given item id, returns item_data array with said item id", async () => {
+        // post item data to newItemId
+        const testItemData1 = {
+          data_type: "text",
+          data_body: "Test item data 1",
+        };
 
-  // post item_data by item id
-  test("POST /api/item_data/:item_id - status 201 - adds item_data with correct item id and returns the newly created item_data", async () => {
-    const newItemData = {
-      data_type: "text",
-      data_body: "Posted item data",
-    };
-    const response = await request(app)
-      .post("/api/item_data?item_id=1")
-      .send(newItemData)
-      .expect(201);
-    validateItemData(response.body.item_data);
-    expect(response.body.item_data.item_id).toBe(1);
-    expect(response.body.item_data.data_type).toBe(newItemData.data_type);
-    expect(response.body.item_data.data_body).toBe(newItemData.data_body);
-    expect(response.body.item_data.id).toBe(15);
-  });
-});
+        if (newItemId === null) {
+          throw new Error("newItemId is null");
+        }
 
-describe("patch", () => {
-  // replace part of an entity - currently set up to allow patching of any combination of updatable fields using an allowlist
-  // patch collection by id
-  test("status: 200 - updates collection name and icon and returns updated collection", async () => {
-    const updatedCollection = {
-      collection_name: "Updated collection name",
-      icon: "🔄",
-    };
-    const response = await request(app)
-      .patch("/api/collection/1")
-      .send(updatedCollection)
-      .expect(200);
-    validateCollection(response.body.collection);
-    expect(response.body.collection.id).toBe(1);
-    expect(response.body.collection.collection_name).toBe(
-      updatedCollection.collection_name,
-    );
-    expect(response.body.collection.icon).toBe(updatedCollection.icon);
-  });
+        await request(app)
+          .post(`/api/item_data?item_id=${newItemId}`)
+          .send(testItemData1)
+          .expect(201);
 
-  test("status: 200 - updates collection name and returns updated collection", async () => {
-    const updatedCollection = {
-      collection_name: "Updated collection name",
-    };
-    const response = await request(app)
-      .patch("/api/collection/1")
-      .send(updatedCollection)
-      .expect(200);
-    validateCollection(response.body.collection);
-    expect(response.body.collection.id).toBe(1);
-    expect(response.body.collection.collection_name).toBe(
-      updatedCollection.collection_name,
-    );
-    expect(response.body.collection.icon).toBe("📁");
-  });
+        const response = await request(app)
+          .get(`/api/item_data?item_id=${newItemId}`)
+          .expect(200);
+        expect(response.body.item_data).toBeInstanceOf(Array);
+        expect(response.body.item_data.length).toBe(1);
+        for (const itemData of response.body.item_data as ItemDataArray) {
+          validateItemData(itemData);
+          expect(itemData.item_id).toBe(newItemId);
+        }
+      });
+    });
 
-  test("status: 200 - updates collection icon and returns updated collection", async () => {
-    const updatedCollection = {
-      icon: "🧐",
-    };
-    const response = await request(app)
-      .patch("/api/collection/1")
-      .send(updatedCollection)
-      .expect(200);
-    validateCollection(response.body.collection);
-    expect(response.body.collection.id).toBe(1);
-    expect(response.body.collection.collection_name).toBe("Getting Started");
-    expect(response.body.collection.icon).toBe(updatedCollection.icon);
-  });
+    // FROM HERE!!!!!!!!
 
-  // patch item by id
-  test("status: 200 - updates item name and icon and returns updated item", async () => {
-    const updatedItem = {
-      item_name: "Updated item name",
-      icon: "🔄",
-    };
-    const response = await request(app)
-      .patch("/api/item/1")
-      .send(updatedItem)
-      .expect(200);
-    validateItem(response.body.item);
-    expect(response.body.item.id).toBe(1);
-    expect(response.body.item.item_name).toBe(updatedItem.item_name);
-    expect(response.body.item.icon).toBe(updatedItem.icon);
-    expect(response.body.item.collection_id).toBe(1);
-  });
-
-  test("status: 200 - updates item.collection_id updated item", async () => {
-    const updatedItem = {
-      collection_id: 2,
-    };
-    const response = await request(app)
-      .patch("/api/item/1")
-      .send(updatedItem)
-      .expect(200);
-    validateItem(response.body.item);
-    expect(response.body.item.id).toBe(1);
-    expect(response.body.item.item_name).toBe("First item");
-    expect(response.body.item.icon).toBe("📝");
-    expect(response.body.item.collection_id).toBe(2);
-  });
-
-  // patch item data by id
-  test("status: 200 - updates item_id, item_data data_type and data_body and returns updated item_data", async () => {
-    const updatedItemData = {
-      item_id: 2,
-      data_type: "image",
-      data_body: "Updated item data body",
-    };
-    const response = await request(app)
-      .patch("/api/item_data/1")
-      .send(updatedItemData)
-      .expect(200);
-    validateItemData(response.body.item_data);
-    expect(response.body.item_data.id).toBe(1);
-    expect(response.body.item_data.item_id).toBe(updatedItemData.item_id);
-    expect(response.body.item_data.data_type).toBe(updatedItemData.data_type);
-    expect(response.body.item_data.data_body).toBe(updatedItemData.data_body);
-  });
-});
-
-describe("delete", () => {
-  // delete collection by id
-  // this is still idempotent as idempotency is defined as the state of the server being the same after one request as it is after multiple identical requests not the request code itself
-  test("status: 204 - deletes collection by id and returns nothing", async () => {
-    const response = await request(app).delete("/api/collection/1").expect(204);
-    expect(response.body).toEqual({});
-    const getResponse = await request(app).get("/api/collection/1").expect(404);
-    expect(getResponse.body.msg).toBe("Collection not found");
-  });
-  // TODO: associated items and item_data should also be deleted via cascade
-  // TODO: need to test ids of deleted items/collections/item_data not reused or can we assume as is postgres behavior?
-
-  // delete item by id
-  test("status: 204 - deletes item by id and returns nothing", async () => {
-    const response = await request(app).delete("/api/item/1").expect(204);
-    expect(response.body).toEqual({});
-    const getResponse = await request(app).get("/api/item/1").expect(404);
-    expect(getResponse.body.msg).toBe("Item not found");
-  });
-  // delete item data by id
-  test("status: 204 - deletes item_data by id and returns nothing", async () => {
-    const response = await request(app).delete("/api/item_data/1").expect(204);
-    expect(response.body).toEqual({});
-    const getResponse = await request(app).get("/api/item_data/1").expect(404);
-    expect(getResponse.body.msg).toBe("Item data not found");
-  });
-});
-
-describe("PUT", () => {
-  // replace whole entity
-  // Will not allow creation on PUTS if id not found as is best practice however allowing creation on PUTS is more idempotent
-  // should not allow change of id or created at - immutable fields
-  //	200 OK — replaced an existing resource.
-  // 201 Created — created a new resource.
-  // 204 No Content — updated but don’t want to send a body.
-  // 404 Not Found — don’t allow creating on PUT and the resource doesn’t exist.
-  // 409 Conflict — state of the system prevents creating/updating (constraint).
-
-  // put collection by id
-  test("status: 200 - updates collection name and icon (all mutable fields) and returns updated collection", async () => {
-    const updatedCollection = {
-      collection_name: "Updated collection name with put",
-      icon: "🔄",
-    };
-    const response = await request(app)
-      .put("/api/collection/2")
-      .send(updatedCollection)
-      .expect(200);
-    validateCollection(response.body.collection);
-    expect(response.body.collection.id).toBe(2);
-    expect(response.body.collection.collection_name).toBe(
-      updatedCollection.collection_name,
-    );
-    expect(response.body.collection.icon).toBe(updatedCollection.icon);
+    // post collection
+//     describe("POST /api/collection", () => {
+//       test("status - 201 - returns the newly created collection", async () => {
+//         const newCollection = {
+//           collection_name: "Posted collection",
+//           icon: "📝",
+//         };
+// 
+//         const response = await request(app)
+//           .post("/api/collection")
+//           .send(newCollection)
+//           .expect(201);
+//         validateCollection(response.body.collection);
+//         expect(response.body.collection.collection_name).toBe(
+//           newCollection.collection_name,
+//         );
+//         expect(response.body.collection.icon).toBe(newCollection.icon);
+//         expect(response.body.collection.id).toBe(8);
+//       });
+//       // post item by collection id
+//       test("POST /api/item/:collection_id - status 201 - adds item with correct collection id and returns the newly created item", async () => {
+//         const newItem = {
+//           item_name: "Posted item",
+//           icon: "📝",
+//         };
+// 
+//         const response = await request(app)
+//           .post("/api/item?collection_id=1")
+//           .send(newItem)
+//           .expect(201);
+//         validateItem(response.body.item);
+//         expect(response.body.item.collection_id).toBe(1);
+//         expect(response.body.item.item_name).toBe(newItem.item_name);
+//         expect(response.body.item.icon).toBe(newItem.icon);
+//       });
+// 
+//       // post item_data by item id
+//       test("POST /api/item_data/:item_id - status 201 - adds item_data with correct item id and returns the newly created item_data", async () => {
+//         const newItemData = {
+//           data_type: "text",
+//           data_body: "Posted item data",
+//         };
+//         const response = await request(app)
+//           .post("/api/item_data?item_id=1")
+//           .send(newItemData)
+//           .expect(201);
+//         validateItemData(response.body.item_data);
+//         expect(response.body.item_data.item_id).toBe(1);
+//         expect(response.body.item_data.data_type).toBe(newItemData.data_type);
+//         expect(response.body.item_data.data_body).toBe(newItemData.data_body);
+//         expect(response.body.item_data.id).toBe(15);
+//       });
+//     });
+// 
+//     describe("patch", () => {
+//       // replace part of an entity - currently set up to allow patching of any combination of updatable fields using an allowlist
+//       // patch collection by id
+//       test("status: 200 - updates collection name and icon and returns updated collection", async () => {
+//         const updatedCollection = {
+//           collection_name: "Updated collection name",
+//           icon: "🔄",
+//         };
+//         const response = await request(app)
+//           .patch("/api/collection/1")
+//           .send(updatedCollection)
+//           .expect(200);
+//         validateCollection(response.body.collection);
+//         expect(response.body.collection.id).toBe(1);
+//         expect(response.body.collection.collection_name).toBe(
+//           updatedCollection.collection_name,
+//         );
+//         expect(response.body.collection.icon).toBe(updatedCollection.icon);
+//       });
+// 
+//       test("status: 200 - updates collection name and returns updated collection", async () => {
+//         const updatedCollection = {
+//           collection_name: "Updated collection name",
+//         };
+//         const response = await request(app)
+//           .patch("/api/collection/1")
+//           .send(updatedCollection)
+//           .expect(200);
+//         validateCollection(response.body.collection);
+//         expect(response.body.collection.id).toBe(1);
+//         expect(response.body.collection.collection_name).toBe(
+//           updatedCollection.collection_name,
+//         );
+//         expect(response.body.collection.icon).toBe("📁");
+//       });
+// 
+//       test("status: 200 - updates collection icon and returns updated collection", async () => {
+//         const updatedCollection = {
+//           icon: "🧐",
+//         };
+//         const response = await request(app)
+//           .patch("/api/collection/1")
+//           .send(updatedCollection)
+//           .expect(200);
+//         validateCollection(response.body.collection);
+//         expect(response.body.collection.id).toBe(1);
+//         expect(response.body.collection.collection_name).toBe(
+//           "Getting Started",
+//         );
+//         expect(response.body.collection.icon).toBe(updatedCollection.icon);
+//       });
+// 
+//       // patch item by id
+//       test("status: 200 - updates item name and icon and returns updated item", async () => {
+//         const updatedItem = {
+//           item_name: "Updated item name",
+//           icon: "🔄",
+//         };
+//         const response = await request(app)
+//           .patch("/api/item/1")
+//           .send(updatedItem)
+//           .expect(200);
+//         validateItem(response.body.item);
+//         expect(response.body.item.id).toBe(1);
+//         expect(response.body.item.item_name).toBe(updatedItem.item_name);
+//         expect(response.body.item.icon).toBe(updatedItem.icon);
+//         expect(response.body.item.collection_id).toBe(1);
+//       });
+// 
+//       test("status: 200 - updates item.collection_id updated item", async () => {
+//         const updatedItem = {
+//           collection_id: 2,
+//         };
+//         const response = await request(app)
+//           .patch("/api/item/1")
+//           .send(updatedItem)
+//           .expect(200);
+//         validateItem(response.body.item);
+//         expect(response.body.item.id).toBe(1);
+//         expect(response.body.item.item_name).toBe("First item");
+//         expect(response.body.item.icon).toBe("📝");
+//         expect(response.body.item.collection_id).toBe(2);
+//       });
+// 
+//       // patch item data by id
+//       test("status: 200 - updates item_id, item_data data_type and data_body and returns updated item_data", async () => {
+//         const updatedItemData = {
+//           item_id: 2,
+//           data_type: "image",
+//           data_body: "Updated item data body",
+//         };
+//         const response = await request(app)
+//           .patch("/api/item_data/1")
+//           .send(updatedItemData)
+//           .expect(200);
+//         validateItemData(response.body.item_data);
+//         expect(response.body.item_data.id).toBe(1);
+//         expect(response.body.item_data.item_id).toBe(updatedItemData.item_id);
+//         expect(response.body.item_data.data_type).toBe(
+//           updatedItemData.data_type,
+//         );
+//         expect(response.body.item_data.data_body).toBe(
+//           updatedItemData.data_body,
+//         );
+//       });
+//     });
+// 
+//     describe("delete", () => {
+//       // delete collection by id
+//       // this is still idempotent as idempotency is defined as the state of the server being the same after one request as it is after multiple identical requests not the request code itself
+//       test("status: 204 - deletes collection by id and returns nothing", async () => {
+//         const response = await request(app)
+//           .delete("/api/collection/1")
+//           .expect(204);
+//         expect(response.body).toEqual({});
+//         const getResponse = await request(app)
+//           .get("/api/collection/1")
+//           .expect(404);
+//         expect(getResponse.body.msg).toBe("Collection not found");
+//       });
+//       // TODO: associated items and item_data should also be deleted via cascade
+//       // TODO: need to test ids of deleted items/collections/item_data not reused or can we assume as is postgres behavior?
+// 
+//       // delete item by id
+//       test("status: 204 - deletes item by id and returns nothing", async () => {
+//         const response = await request(app).delete("/api/item/1").expect(204);
+//         expect(response.body).toEqual({});
+//         const getResponse = await request(app).get("/api/item/1").expect(404);
+//         expect(getResponse.body.msg).toBe("Item not found");
+//       });
+//       // delete item data by id
+//       test("status: 204 - deletes item_data by id and returns nothing", async () => {
+//         const response = await request(app)
+//           .delete("/api/item_data/1")
+//           .expect(204);
+//         expect(response.body).toEqual({});
+//         const getResponse = await request(app)
+//           .get("/api/item_data/1")
+//           .expect(404);
+//         expect(getResponse.body.msg).toBe("Item data not found");
+//       });
+//     });
+// 
+//     describe("PUT", () => {
+//       // replace whole entity
+//       // Will not allow creation on PUTS if id not found as is best practice however allowing creation on PUTS is more idempotent
+//       // should not allow change of id or created at - immutable fields
+//       //	200 OK — replaced an existing resource.
+//       // 201 Created — created a new resource.
+//       // 204 No Content — updated but don’t want to send a body.
+//       // 404 Not Found — don’t allow creating on PUT and the resource doesn’t exist.
+//       // 409 Conflict — state of the system prevents creating/updating (constraint).
+// 
+//       // put collection by id
+//       test("status: 200 - updates collection name and icon (all mutable fields) and returns updated collection", async () => {
+//         const updatedCollection = {
+//           collection_name: "Updated collection name with put",
+//           icon: "🔄",
+//         };
+//         const response = await request(app)
+//           .put("/api/collection/2")
+//           .send(updatedCollection)
+//           .expect(200);
+//         validateCollection(response.body.collection);
+//         expect(response.body.collection.id).toBe(2);
+//         expect(response.body.collection.collection_name).toBe(
+//           updatedCollection.collection_name,
+//         );
+//         expect(response.body.collection.icon).toBe(updatedCollection.icon);
+//       });
+    // });
   });
 });
 
