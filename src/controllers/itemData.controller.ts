@@ -81,6 +81,9 @@ export const patchItemDataById = async (
       return res.status(400).json({ msg: "No updatable fields provided" });
     }
     const itemData = await updateItemDataById(id, propertyNames, propertyValues);
+    if (!itemData) {
+      return res.status(404).json({ msg: "Item data not found" });
+    }
     return res.status(200).json({ item_data: itemData });
   } catch (error) {
     console.error("Error in patch /api/item_data/:id", error);
