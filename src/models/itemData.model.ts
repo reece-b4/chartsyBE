@@ -42,14 +42,12 @@ export const updateItemDataById = async (
   propertyNames: any[],
   propertyValues: any[],
 ) => {
-  console.log('propertyNames:', propertyNames);
   const setClauses = propertyNames.map((prop, i) => `${prop} = $${i + 2}`);
   const query = `UPDATE item_data 
        SET ${setClauses.join(", ")}
        WHERE id = $1
        RETURNING *;`;
        const values = [id, ...propertyValues];
-       console.log("Update query:", query,"values:", values);
 
   const result = await db.query(query, values);
   if (result.rows.length === 0) {
