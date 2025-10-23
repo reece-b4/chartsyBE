@@ -80,6 +80,10 @@ export const patchCollectionById = async (
       propertyNames,
       propertyValues,
     );
+    // TODO: if users implemented implement 403 unauthorized on update of others' collections in general and to secure against enumeration attacks
+    if (!collection) {
+      return res.status(404).json({ msg: "Collection not found" });
+    }
     return res.status(200).json({ collection });
   } catch (error) {
     console.error("Error in patch /api/collection/:id:", error);

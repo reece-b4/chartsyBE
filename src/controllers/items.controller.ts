@@ -87,6 +87,9 @@ export const patchItemById = async (
     }
 
     const item = await updateItemById(id, propertyNames, propertyValues);
+    if (!item) {
+      return res.status(404).json({ msg: "Item not found" });
+    }
     return res.status(200).json({ item });
   } catch (error) {
     console.error("Error in patch /api/item/:id:", error);
