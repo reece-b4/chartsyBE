@@ -2,7 +2,7 @@ import db from "../../db/connection";
 import { Collection } from "chartsy-types";
 
 export const fetchAllCollections = async () => {
-  const result = await db.query("SELECT * FROM collections;");
+  const result = await db.query("SELECT * FROM collections ORDER BY id;");
   const collections = result.rows.map((collection: Collection) => ({
     id: collection.id,
     collection_name: collection.collection_name,

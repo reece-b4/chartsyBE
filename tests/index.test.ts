@@ -832,6 +832,7 @@ describe("non hardcoded content (dynamic) tests)", () => {
   });
 });
 
+// TODO: test newly implemented order by for get all collections,items and items by collection is working correctly
 // TODO: ensure http codes correct
 // TODO: refactor to standard practice organisation of tests here ie, group collections vs gets etc
 

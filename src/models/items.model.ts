@@ -6,9 +6,9 @@ import {
 export const fetchItems = async (collectionId: number | null) => {
     let query: string;
     if (collectionId) {
-        query = "SELECT * FROM items WHERE collection_id = $1;";
+        query = "SELECT * FROM items WHERE collection_id = $1 ORDER BY id;";
     } else {
-        query = "SELECT * FROM items;";
+        query = "SELECT * FROM items ORDER BY id;";
     }
   const result = await db.query(query, collectionId ? [collectionId] : []);
   const items = result.rows.map((item: Item) => item);
